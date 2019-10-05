@@ -1,0 +1,57 @@
+import React, {PureComponent} from 'react';
+import {Switch, Route} from 'react-router-dom';
+import SiteHeader from '../SiteHeader';
+import Content from '../../views/Content';
+import Navigation from '../Navigation';
+import {Grommet} from 'grommet';
+// pages
+
+import Home from '../pages/Home';
+import Alpha from '../pages/Home';
+import Beta from '../pages/Home';
+import theme from './theme.json';
+
+import {Grid, Box} from 'grommet';
+
+export default class Main extends PureComponent {
+
+  constructor(props, context) {
+    super(props, context);
+  }
+
+  render() {
+    return (
+      <main>
+        <Grommet theme={theme} full>
+          <Grid
+            rows={['10rem', 'auto']}
+            columns={['20rem', 'auto']}
+            gap="none"
+            areas={[
+              {name: 'header', start: [0, 0], end: [1, 0]},
+              {name: 'nav', start: [0, 1], end: [0, 1]},
+              {name: 'main', start: [1, 1], end: [1, 1]},
+            ]}
+          >
+            <Box gridArea="header">
+              <SiteHeader/>
+            </Box>
+            <Box gridArea="nav">
+              <Navigation/>
+            </Box>
+            <Box gridArea="main">
+              <Content>
+                <Switch>
+                  <Route path="/" exact component={Home}/>
+                  <Route path="/alpha" component={Alpha}/>
+                  <Route path="/beta" component={Beta}/>
+                  <Route component={Home}/>
+                </Switch>
+              </Content>
+            </Box>
+          </Grid>
+        </Grommet>
+      </main>
+    );
+  }
+}
