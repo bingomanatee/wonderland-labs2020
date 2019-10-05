@@ -1,20 +1,51 @@
-import React, { PureComponent } from 'react';
+import React, {PureComponent} from 'react';
+import {Button, ResponsiveContext} from 'grommet';
+import NavGrid from './NavGrid';
+import styled from "styled-components";
+
+const NavItem = styled.div`
+margin-top: 1rem;
+margin-right: 1rem;
+margin-left: -1px;
+`;
+
+const NavItemSmall = styled.div`
+margin: 2px;
+`;
+const NavButtonInner = styled(Button)`
+text-align: center;
+`;
+
+const NavButton = (props) => {
+  return <ResponsiveContext.Consumer>
+    {(size) => {
+      const Container = (size === 'small') ? NavItemSmall : NavItem;
+      return <Container>
+        <NavButtonInner {...props} plain={false}  fill={size !== 'small'} >
+          {props.children}
+        </NavButtonInner>
+      </Container>
+    }
+    }
+  </ResponsiveContext.Consumer>
+}
+
 
 export default class Navigation extends PureComponent {
   render() {
-    const { history } = this.props;
+    const {history} = this.props;
     return (
-      <nav id="leftnav">
-        <div onClick={() => history.push('/')}>
-        Home
-        </div>
-        <div onClick={() => history.push('/alpha')}>
+      <NavGrid>
+        <NavButton onClick={() => history.push('/')}>
+          Home
+        </NavButton>
+        <NavButton onClick={() => history.push('/alpha')}>
           Alpha
-        </div>
-        <div onClick={() => history.push('/beta')}>
+        </NavButton>
+        <NavButton onClick={() => history.push('/beta')}>
           Beta
-        </div>
-      </nav>
+        </NavButton>
+      </NavGrid>
     );
   }
 }

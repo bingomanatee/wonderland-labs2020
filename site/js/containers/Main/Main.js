@@ -4,12 +4,15 @@ import SiteHeader from '../SiteHeader';
 import Content from '../../views/Content';
 import Navigation from '../Navigation';
 import {Grommet} from 'grommet';
+
+import MainGrid from './MainGrid';
+
 // pages
 
 import Home from '../pages/Home';
 import Alpha from '../pages/Home';
 import Beta from '../pages/Home';
-import theme from './theme.json';
+import theme from './theme.js';
 
 import {Grid, Box} from 'grommet';
 
@@ -23,17 +26,8 @@ export default class Main extends PureComponent {
     return (
       <main>
         <Grommet theme={theme} full>
-          <Grid
-            rows={['10rem', 'auto']}
-            columns={['20rem', 'auto']}
-            gap="none"
-            areas={[
-              {name: 'header', start: [0, 0], end: [1, 0]},
-              {name: 'nav', start: [0, 1], end: [0, 1]},
-              {name: 'main', start: [1, 1], end: [1, 1]},
-            ]}
-          >
-            <Box gridArea="header">
+          <MainGrid>
+            <Box className="site-header" gridArea="header">
               <SiteHeader/>
             </Box>
             <Box gridArea="nav">
@@ -49,7 +43,7 @@ export default class Main extends PureComponent {
                 </Switch>
               </Content>
             </Box>
-          </Grid>
+          </MainGrid>
         </Grommet>
       </main>
     );

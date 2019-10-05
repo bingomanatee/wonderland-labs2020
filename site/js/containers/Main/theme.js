@@ -1,13 +1,16 @@
-{
+export default {
   "name": "hexworld",
   "rounding": 2,
   "spacing": 20,
   "global": {
     "colors": {
-      "brand": "#663300"
+      "brand": "#3e2524",
+      "accent-1": "#66e6d1",
+      "accent-2":  "#7a1d1d",
+      "accent-3": "#d6ff31"
     },
     "font": {
-      "family": "Helvetica",
+      "family": 'LotaGrotesque-Regular, "HelveticaNeue", Helvetica, sans-serif',
       "size": "15px",
       "height": "20px",
       "maxWidth": "300px"
@@ -20,7 +23,7 @@
     "borderSize": {
       "xsmall": "1px",
       "small": "2px",
-      "medium": "3.3333333333333335px",
+      "medium": "3px",
       "large": "10px",
       "xlarge": "20px"
     },
@@ -30,7 +33,7 @@
         "borderSize": {
           "xsmall": "1px",
           "small": "2px",
-          "medium": "3.3333333333333335px",
+          "medium": "3px",
           "large": "5px",
           "xlarge": "10px"
         },
@@ -89,7 +92,8 @@
   "button": {
     "border": {
       "width": "2px",
-      "radius": "15px"
+      "radius": "15px",
+      "color": "primary"
     },
     "padding": {
       "vertical": "3px",
@@ -133,7 +137,7 @@
         "size": "20px"
       },
       "minute": {
-        "width": "3.3333333333333335px",
+        "width": "3px",
         "size": "10px"
       },
       "second": {

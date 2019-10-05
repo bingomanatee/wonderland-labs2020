@@ -1,4 +1,4 @@
-import SiteHeaderContainer from './SiteHeaderContainer';
+import SiteHeaderContainer from './SiteHeader';
 
 // @TODO: any bindings / hoc
 
