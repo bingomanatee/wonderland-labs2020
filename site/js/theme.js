@@ -256,6 +256,9 @@ export default {
       "vertical": "4px",
       "horizontal": "22px"
     },
+    "extend": {
+      "whiteSpace": "nowrap"
+    }
   },
   "calendar": {
     "small": {

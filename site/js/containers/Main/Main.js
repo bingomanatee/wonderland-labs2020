@@ -12,7 +12,8 @@ import MainGrid from './MainGrid';
 import Home from '../pages/Home';
 import Create from '../pages/Create';
 import Beta from '../pages/Home';
-import theme from './theme.js';
+import World from '../pages/World';
+import theme from '../../theme.js';
 
 import {Grid, Box} from 'grommet';
 
@@ -39,6 +40,7 @@ export default class Main extends PureComponent {
                   <Route path="/" exact component={Home}/>
                   <Route path="/create" component={Create}/>
                   <Route path="/beta" component={Beta}/>
+                  <Route path="/world/:name" component={World}/>
                   <Route component={Home}/>
                 </Switch>
               </Content>

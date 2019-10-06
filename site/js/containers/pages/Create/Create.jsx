@@ -1,64 +1,120 @@
-import React from 'react';
-import PageFrame from '../../../views/PageFrame';
-import {Grid, Text, TextInput, Box, RangeInput, Button} from 'grommet';
+import React, {Component} from 'react';
+import {Formik, Form, Field, ErrorMessage} from 'formik';
+import {Text, TextInput, Box, RangeInput, Button} from 'grommet';
+import {Schema} from '@wonderlandlabs/schema';
 
-export default () => (
-  <PageFrame>
-    <h1>Create a world</h1>
-    <Grid
-    columns={['10rem', ['10rem', '30rem']]}
-    rows={["auto", 'auto', 'auto']}
-    gap="medium"
-    areas={[
-      {
-        name: 'name-label',
-        start: [0,0],
-        end: [0,0]
-      },
-      {
-        name: 'name-field',
-        start: [1, 0],
-        end: [1, 0]
-      },
-      {
-        name: 'resolution-label',
-        start: [0,1],
-        end: [0,1]
-      },
-      {
-        name: 'resolution-field',
-        start: [1, 1],
-        end: [1, 1]
-      },
-      {
-        name: 'buttons',
-        start: [0, 2],
-        end: [1, 2]
-      }
-    ]}
-    >
-      <Box gridArea="name-label" direction="row" align="center" alignContent="start">
-        <Text align="center">Name    </Text>
-      </Box>
-      <Box gridArea="name-field" direction="row"  align="center" alignContent="start">
-        <TextInput name="name" />
-      </Box>
-      <Box gridArea="resolution-label" direction="row" align="center" alignContent="start">
-        <Text align="center">Resolution    </Text>
-      </Box>
-      <Box gridArea="resolution-field" direction="row"  align="center" alignContent="start">
-        <RangeInput name="resolution" min="20" max="40" step="5" />
-      </Box>
-      <Box gridArea="buttons" fill={true} direction="row" align="center" alignContent="center" pad="medium">
-        <Box fill={false} direction="row" margin="medium" align="center" gap="large" alignContent="center">
-          <div>
-            <Button primary={true} plain={false}>Create World</Button>
-          </div>
-          <div>
-            <Button plain={false}>Cancel</Button>
-          </div>
-        </Box>
-      </Box>
-    </Grid>
-  </PageFrame>
-)
+import PageFrame from '../../../views/PageFrame';
+import worldState from '../../../store/worlds.store'
+import CreateGrid from './CreateGrid';
+import ButtonBox from './ButtonBox';
+
+export default class Create extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {...worldState.state}
+  }
+
+  componentDidMount() {
+    this._sub = worldState.subscribe(({state}) => {
+      this.setState(state)
+    });
+  }
+
+  componentWillUnmount() {
+    if (this._sub) this._sub.unsubscribe();
+  }
+
+  get schema() {
+    if (!this._schema) {
+      this._schema = new Schema('world', {
+        name: {
+          type: 'string',
+          required: true,
+          validator: (name) => {
+            if (name.length < 4) return 'name must be at least 4 characters';
+            return false;
+          },
+          defaultValue: '',
+        },
+        range: {
+          type: 'integer',
+          required: true,
+          defaultValue: 20
+        }
+      });
+    }
+    return this._schema;
+  }
+
+  render() {
+    const {resolution, name} = this.state;
+    const {history} = this.props;
+
+    return <PageFrame>
+      <h1>Create a world</h1>
+      <Formik
+        initialValues={this.schema.instance()}
+        validate={values => {
+          let errorState = this.schema.validate(values);
+          const errors = {};
+          errorState.fields.forEach((field, name) => {
+            if (!field.isValid) {
+              errors[name] = field.errors[0];
+            }
+          });
+          return errors;
+        }}
+        onSubmit={(values, form) => {
+          const {setSubmitting, resetForm, setFieldValue} = form;
+          console.log('submit form: ', form);
+          worldState.actions.addWorld(values);
+          history.push('/world/' + values.name);
+          resetForm(this.schema.instance());
+        }}
+      >
+        {({isSubmitting}) => (
+          <Form>
+            <CreateGrid>
+              <Box gridArea="name-label" direction="row" align="center" alignContent="start">
+                <Text align="center">Name </Text>
+              </Box>
+              <Box gridArea="name-field" direction="column" align="center" alignContent="start">
+                <Field name="name" id="name" type="text">
+                  {({field: {value}, form: {setFieldValue}}) => (
+                    <TextInput value={value} onChange={(e) => {
+                      setFieldValue('name', e.target.value)
+                    }} name="name"/>
+                  )}
+                </Field>
+                <ErrorMessage name="name" component="div" />
+              </Box>
+              <Box gridArea="resolution-label" direction="row" align="center" alignContent="start">
+                <Text align="center">Resolution </Text>
+              </Box>
+              <Box gridArea="resolution-field" direction="column" align="center" alignContent="start">
+                <Field name="resolution" id="resolution" type="number">
+                {({field: {value}, form: {setFieldValue}}) => (
+                  <Box direction="row" fill={true} gap="medium">
+                  <RangeInput value={value || 20} onChange={(e) =>{
+                  setFieldValue('resolution', parseInt(e.target.value, 10));
+                }} name="resolution" min={20} max={40} step={5}/>
+                  <div>{value || 20}</div>
+                  </Box>
+                  )}
+                </Field>
+              </Box>
+              <ButtonBox>
+                    <Button type="submit" primary={true} plain={false}>Create World</Button>
+                    <Button type="button" plain={false}>Cancel</Button>
+              </ButtonBox>
+            </CreateGrid>
+          </Form>
+        )
+        }
+      </Formik>
+    </PageFrame>
+  }
+}
+
