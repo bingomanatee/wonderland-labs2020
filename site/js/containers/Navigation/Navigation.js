@@ -39,8 +39,8 @@ export default class Navigation extends PureComponent {
         <NavButton onClick={() => history.push('/')}>
           Home
         </NavButton>
-        <NavButton onClick={() => history.push('/alpha')}>
-          Alpha
+        <NavButton onClick={() => history.push('/create')}>
+          Create
         </NavButton>
         <NavButton onClick={() => history.push('/beta')}>
           Beta

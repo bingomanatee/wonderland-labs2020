@@ -10,7 +10,7 @@ import MainGrid from './MainGrid';
 // pages
 
 import Home from '../pages/Home';
-import Alpha from '../pages/Home';
+import Create from '../pages/Create';
 import Beta from '../pages/Home';
 import theme from './theme.js';
 
@@ -37,7 +37,7 @@ export default class Main extends PureComponent {
               <Content>
                 <Switch>
                   <Route path="/" exact component={Home}/>
-                  <Route path="/alpha" component={Alpha}/>
+                  <Route path="/create" component={Create}/>
                   <Route path="/beta" component={Beta}/>
                   <Route component={Home}/>
                 </Switch>
