@@ -38,7 +38,10 @@ const NavDropButton = (props) => {
     {(size) => {
       const Container = (size === 'small') ? NavItemSmall : NavItem;
       return <Container>
-        <NavDropButtonInner {...props} plain={false} fill={size !== 'small'} dropAlign={{left: 'right'}}
+        <NavDropButtonInner {...props} plain={false} fill={size !== 'small'} dropAlign={{
+          top: size === 'small' ? 'bottom' : 'top',
+          left: size === 'small' ?  'left' : 'right'
+        }}
                             dropContent={<Box direction="column" gap="none">
                               {props.children}
                             </Box>}>
@@ -48,7 +51,7 @@ const NavDropButton = (props) => {
     }
     }
   </ResponsiveContext.Consumer>
-}
+};
 
 export default class Navigation extends PureComponent {
   constructor(props) {
