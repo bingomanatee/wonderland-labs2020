@@ -83,7 +83,7 @@ export default class Navigation extends PureComponent {
         {worlds.size ?
           <NavDropButton label="edit World">
             {Array.from(worlds.values()).map(world => {
-              return <Box direction="row" pad="small">
+              return <Box direction="row" pad="small" key={world.name}>
                   <Button plain={true} fill="true" onClick={() => history.push('/world/' + world.name)}>{world.name}</Button>
                 </Box>
             })}
