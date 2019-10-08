@@ -57,7 +57,7 @@ export default class WorldPage extends Component {
   }
 
   render() {
-    const { resolution, world } = this.state;
+    const { world } = this.state;
     if (!world) {
       this.props.history.push('/');
       return '';
@@ -70,7 +70,7 @@ export default class WorldPage extends Component {
             {' '}
             {`"${world.name}"`}
             (res:
-            {resolution}
+            {world.resolution}
             )
           </Text>
         </Box>
