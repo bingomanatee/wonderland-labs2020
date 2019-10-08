@@ -3,11 +3,12 @@ import {
 } from 'grommet';
 import React, { Component } from 'react';
 import _ from 'lodash';
-import PageFrame from '../../../views/PageFrame';
 import WorldGrid from './WorldGrid';
 import worldStore from '../../../store/worlds.store';
 import DrawWorld from './DrawWorld';
 import { World } from '../../../hexagon';
+
+import Elevations from './panels/Elevations';
 
 const panelBorder = {
   width: '2px',
@@ -21,35 +22,65 @@ export default class WorldPage extends Component {
     super(props);
     const name = _.get(match, 'params.name');
 
-    const worldData = worldStore.state.worlds.get(name);
-    const world = worldData ? new World(worldData.name, worldData.resolution) : null;
+    const world = worldStore.state.worlds.get(name);
 
-    this.state = { ...worldData, world };
+    this.state = { world };
+  }
+
+  componentWillUnmount() {
+    if (this._sub) this._sub.unsubscribe();
+  }
+
+  componentDidMount() {
+    this._sub = worldStore.subscribe(({ state }) => {
+      this.setState(state);
+    }, (err) => {
+      console.log('worldStore error: ', err);
+    });
+  }
+
+  getSnapshotBeforeUpdate(prevProps, prevState) {
+    const newWorldName = _.get(this, 'props.match.params.name');
+    if (this.state.world.name !== newWorldName) {
+      return worldStore.state.worlds.get(newWorldName);
+    }
+    return null;
+  }
+
+  componentDidUpdate(prevProps, prevState, world) {
+    // If we have a snapshot value, we've just added new items.
+    // Adjust scroll so these new items don't push the old ones out of view.
+    // (snapshot here is the value returned from getSnapshotBeforeUpdate)
+    if (world) {
+      this.setState({ world });
+    }
   }
 
   render() {
-    const { resolution,  world } = this.state;
+    const { resolution, world } = this.state;
     if (!world) {
       this.props.history.push('/');
       return '';
     }
     return (
       <WorldGrid>
-        <Box border={panelBorder} gridArea="header" pad="medium">
-          <h1>
+        <Box gridArea="header" pad="medium">
+          <Text size="medium" weight="bold">
             World
             {' '}
             {`"${world.name}"`}
             (res:
             {resolution}
             )
-          </h1>
+          </Text>
         </Box>
-        <Box border={panelBorder} gridArea="editor">
+        <Box gridArea="editor">
           <DrawWorld world={world} />
         </Box>
-        <Box border={panelBorder} gridArea="panel-one">Panel One</Box>
-        <Box border={panelBorder} gridArea="panel-two">Panel Two</Box>
+        <Box gridArea="panel-one">
+          <Elevations world={world} />
+        </Box>
+        <Box gridArea="panel-two">Panel Two</Box>
       </WorldGrid>
     );
   }

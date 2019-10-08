@@ -22,6 +22,9 @@ export default class Create extends Component {
   componentDidMount() {
     this._sub = worldState.subscribe(({ state }) => {
       this.setState(state);
+    },
+    (err) => {
+      console.log('nav: worldState error:', err);
     });
   }
 

@@ -24,7 +24,7 @@ export default {
         "dark": "accent-1",
         "light": "brand"
       },
-      "focus": "#6FFFB0",
+      "focus": "#398aff",
       "placeholder": "#AAAAAA",
       "selected": "brand",
       "text": {
@@ -32,7 +32,7 @@ export default {
         "light": "#444444"
       },
       "white": "#FFFFFF",
-      "accent-1": "#66e6d1",
+      "accent-1": "#93e61e",
       "accent-2": "#7a1d1d",
       "accent-3": "#d6ff31",
       "accent-4": "#FFCA58",
@@ -48,10 +48,10 @@ export default {
       "light-4": "#DADADA",
       "light-5": "#DADADA",
       "light-6": "#DADADA",
-      "neutral-1": "#00873D",
+      "neutral-1": "#1578c9",
       "neutral-2": "#3D138D",
       "neutral-3": "#00739D",
-      "neutral-4": "#A2423D",
+      "neutral-4": "#9a9db2",
       "status-critical": "#FF4040",
       "status-error": "#FF4040",
       "status-warning": "#FFAA15",
