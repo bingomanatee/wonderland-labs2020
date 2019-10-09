@@ -15,27 +15,25 @@ function loopToPolyPoints(loop) {
     .join(' ');
 }
 
-const PAINT_OP = 0.25;
 
 export default class World {
   constructor(name, resolution = 0) {
-    console.log('----- creating world ', name, resolution);
     this.name = name;
     this.resolution = resolution;
     this.init();
-    this.paint = _.throttle((n, e) => this._paint(n, e), 50);
+    this.paint = _.throttle((n, e) => this._paint(n, e), 100);
+    console.log('new world: ', this);
   }
 
   _paint(n, e) {
     const worldPoint = this.points.get(n);
     if (worldPoint) {
-
       const height = this.elevationHeight;
-      const newHeight = (
-        PAINT_OP * height
-        + (1 - PAINT_OP) * worldPoint.height
-      );
-      worldPoint.height = newHeight;
+      this.points.forEach((otherWP) => {
+        if (otherWP.vertex.manhattanDistanceTo(worldPoint.vertex) < 2 * (this.radius)) {
+          otherWP.addHeight(height, worldPoint.vertex, this.radius, this.opacity);
+        }
+      });
     } else {
       console.log('cannot find point ', n);
     }
@@ -43,8 +41,12 @@ export default class World {
 
   get elevationHeight() {
     return this.elevations.reduce((match, candidate) => {
-      if (match) return match;
-      if (candidate.name === this.currentElevation) return candidate;
+      if (match) {
+        return match;
+      }
+      if (candidate.name === this.currentElevation) {
+        return candidate;
+      }
       return null;
     }, null).height;
   }
@@ -231,9 +233,9 @@ export default class World {
         xl: 0, xr, yt: 0, yb,
       }; // xl is x-left, xr is x-right, yt is y-top, and yb is y-bottom
 
-      const points2D = this.model.vertices.map((point, i) => {
+      const points2D = this.model.vertices.map((vertex, i) => {
         // @todo - put to worldPoint
-        const { x, y, z } = point;
+        const { x, y, z } = vertex;
         const lat = Math.atan2(z, Math.sqrt(x * x + y * y));
         const lng = (Math.atan2(y, x) + Math.PI) % (Math.PI * 2);
         const x2D = lng / (Math.PI * 2);
@@ -244,7 +246,7 @@ export default class World {
           lat,
           lng,
           world: this,
-          point,
+          vertex,
           x: Math.round(x2D * xr),
           y: Math.round(y2D * yb),
           pointIndex: i,
@@ -288,6 +290,15 @@ export default class World {
 
 propper(World)
   .addProp('svgRef')
+  .addProp('opacity', {
+    defaultValue: 0.5,
+    onChange(value) {
+      console.log('opacity set to ', value);
+    },
+  })
+  .addProp('radius', {
+    defaultValue: 0.1,
+  })
   .addProp('name', {
     type: 'string',
     defaultValue: '',

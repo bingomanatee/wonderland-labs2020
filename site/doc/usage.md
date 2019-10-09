@@ -21,7 +21,7 @@ the code through an automated build process. Moving up in complexity HTML5
 Boilerplate can be integrated with whatever front-end framework, CMS or
 e-commerce platform you're working with. Mix-and-match to your heart's content.
 Use what you need (toss it in a blender if you need to) and discard the rest.
-HTML5 Boilerplate is a starting point, not a destination.
+HTML5 Boilerplate is a starting vertex, not a destination.
 
 ## Basic structure
 

@@ -9,6 +9,7 @@ import DrawWorld from './DrawWorld';
 import { World } from '../../../hexagon';
 
 import Elevations from './panels/Elevations';
+import Brushes from './panels/Brush';
 
 const panelBorder = {
   width: '2px',
@@ -80,7 +81,9 @@ export default class WorldPage extends Component {
         <Box gridArea="panel-one">
           <Elevations world={world} />
         </Box>
-        <Box gridArea="panel-two">Panel Two</Box>
+        <Box gridArea="panel-two">
+          <Brushes world={world} />
+        </Box>
       </WorldGrid>
     );
   }

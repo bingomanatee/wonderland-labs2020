@@ -15,6 +15,17 @@ export default class WorldPoint {
     }
   }
 
+  addHeight(height, center, radius, opacity, checked) {
+    const distance = this.vertex.distanceTo(center);
+    if (distance < radius) {
+      const attrition = (distance < radius / 4) ? 1 : 1 - (distance / radius);
+      const changeAmount = opacity * attrition;
+      this.height = this.height * (1 - changeAmount) + height * changeAmount;
+      return true;
+    }
+    return false;
+  }
+
   get height() {
     if (!this.world.heights.has(this.pointIndex)) return 0;
     return this.world.heights.get(this.pointIndex);
@@ -53,6 +64,7 @@ propper(WorldPoint)
       }
     },
   })
+  .addProp('vertex', () => ({ x: 0, y: 0, z: 0 }), 'object')
   .addProp('x', {
     type: 'number',
     required: 'true',
