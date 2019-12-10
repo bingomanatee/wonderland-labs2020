@@ -6,6 +6,8 @@ export default ({children}) => {
     {(size) => {
       switch (size) {
         case 'small':
+        case 'medium':
+        case 'large':
           return <Grid
             rows={['5rem', '3rem', 'auto']}
             columns={['auto']}

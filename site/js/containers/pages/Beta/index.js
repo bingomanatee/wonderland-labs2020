@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import World from './World';
+import Beta from './Beta';
 import { withRouter } from 'react-router-dom';
 
-export default withRouter(World);
+export default withRouter(Beta);

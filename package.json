@@ -18,14 +18,11 @@
   "dependencies": {
     "@wonderlandlabs/looking-glass-engine": "^2.0.7",
     "@wonderlandlabs/propper": "^2.0.5",
-    "@wonderlandlabs/schema": "^1.0.0",
     "axios": "^0.19.0",
     "babel-eslint": "^10.0.3",
     "chroma-js": "^2.0.6",
-    "formik": "^1.5.8",
     "grommet": "^2.7.9",
     "grommet-icons": "^4.3.0",
-    "http-proxy": "^1.18.0",
     "is_js": "^0.9.0",
     "lodash": "^4.17.15",
     "parcel-bundler": "^1.12.3",
@@ -34,12 +31,9 @@
     "react-router-dom": "^5.0.1",
     "react-sizeme": "^2.6.7",
     "scss": "^0.2.4",
-    "semantic-ui-react": "^0.88.1",
     "styled-components": "^4.3.2",
     "svg.js": "^2.7.1",
-    "three": "^0.109.0",
-    "uuid": "^3.3.3",
-    "voronoi": "^1.0.0"
+    "uuid": "^3.3.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -57,7 +51,6 @@
     "jest": "^24.9.0",
     "parcel-plugin-static-files-copy": "^2.2.1",
     "regenerator-runtime": "^0.13.3",
-    "sass": "^1.23.0-module.beta.1",
     "tap": "^14.6.9"
   },
   "browserslist": [
