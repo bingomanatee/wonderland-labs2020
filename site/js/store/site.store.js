@@ -1,7 +1,16 @@
 import { ValueStream } from '@wonderlandlabs/looking-glass-engine';
+import axios from 'axios';
 
-const SiteStore = new ValueStream('siteStore')
-  .method('inc', (s) => s.setCount(s.my.count + 1))
+const stream = new ValueStream('mainStore')
+  .property('homepageArticles', [], 'array')
+  .method('loadHomepageArticles', (s) => {
+    axios.get('https://wonderland-labs.herokuapp.com/api/homepage-articles')
+      .then(({ data }) => {
+        s.do.setHomepageArticles(data);
+      });
+  })
   .property('count', 1, 'integer');
 
-export default SiteStore;
+stream.do.loadHomepageArticles();
+
+export default stream;

@@ -21,6 +21,7 @@
         "code": 120
       }
     ],
+    "prefer-destructuring": "warn",
     "react/jsx-filename-extension": 0,
     "react/no-array-index-key": 1,
     "react/prop-types": 0,

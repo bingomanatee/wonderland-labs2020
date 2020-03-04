@@ -42,6 +42,14 @@ html {
   text-shadow: none;
 }
 
+.background-container {
+  background-image: url("/img/bunny-rabbit.jpg");
+  background-size: cover;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
 /*
  * A better looking default horizontal rule
  */
