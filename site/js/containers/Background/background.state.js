@@ -15,8 +15,8 @@ const FINISHED = 2;
 const BLENDED = 1;
 const UNCHANGED = 0;
 
-const PIXEL_CLAMP = 400;
-const HEX_DIVS = 20;
+const PIXEL_CLAMP = 200;
+const HEX_DIVS = 25;
 
 function initials(string) {
   return string.split(/\s+/g)
@@ -39,7 +39,7 @@ const stringRGB = (str) => {
     const value = (hash >> (i * 8)) & 255;
     rgb[i] = value;
   }
-  return chroma(...rgb).brighten().desaturate();
+  return chroma(...rgb).brighten(2);
 };
 
 export default ({ size }) => {
@@ -72,6 +72,7 @@ export default ({ size }) => {
     .method(
       'tryInit',
       (s, reset) => {
+        console.log('tryInit');
         if (s.my.init && !reset) {
           console.log('tryInit abort');
           return;
@@ -87,20 +88,23 @@ export default ({ size }) => {
         // console.log('making coords from ', s.my.width, s.my.height);
 
         s.do.stopTransform();
-        s.do.recreateHexes();
-        if (s.my.currentArticle) {
-          s.do.resizeCanvas();
-          s.do.drawArticle();
-        } else {
-          s.do.canvasToTarget(true);
-          s.do.setImage('/img/bunny-rabbit.jpg');
-        }
+        requestAnimationFrame(() => {
+          s.do.recreateHexes();
+          if (s.my.currentArticle) {
+            s.do.resizeCanvas();
+            s.do.drawArticle();
+          } else {
+            s.do.canvasToTarget(true);
+            s.do.setImage('/img/bunny-rabbit.jpg');
+          }
+        });
         s.do.setInit(true);
       },
       true,
     )
     .method('recreateHexes', (s) => {
       const hexScale = N(s.my.width).plus(s.my.height).div(2).div(HEX_DIVS)
+        .plus(5)
         .max(20).value;
       s.do.setMatrix(new Hexes({ scale: hexScale, pointy: true }));
 
@@ -278,7 +282,7 @@ export default ({ size }) => {
         ...lightCells.slice(0, Math.max(lightCells.length / 2, PIXEL_CLAMP / 2)),
         ...darkCells];
 
-      cellsToRedraw = cellsToRedraw.slice(0, PIXEL_CLAMP);
+      cellsToRedraw = cellsToRedraw.slice(0, cellsToRedraw.length / 2);
 
       if (cellsToRedraw.length || s.my.cellsToRedraw.length) {
         s.do.setCellsToRedraw(cellsToRedraw);
@@ -325,26 +329,15 @@ export default ({ size }) => {
       s.do.setCellsToRedraw(leftOver);
     })
     .property('dissolveCells', [], 'array')
-    .watchFlat('width', (s, width) => {
-      console.log('================ width: ', width);
-    })
     .method('drawArticle', (s) => {
-      if (!s.my.canvas) {
-        return;
-      }
-      if (!s.my.currentArticle) {
-        if (s.my.imageResource) {
-          s.do.drawImageResource();
-        } else {
-          s.do.setImage('/img/bunny-rabbit.jpg');
-        }
+      if ((!s.my.canvas) || (!s.my.currentArticle)) {
         return;
       }
       const ctx = s.my.canvas.getContext('2d');
       const baseColor = stringRGB(s.my.currentArticle.title);
       const { canvas } = s.my;
       ctx.save();
-      ctx.fillStyle = baseColor.saturate(2).darken().hex();
+      ctx.fillStyle = baseColor.saturate(2).hex();
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.textAlign = 'center';
@@ -354,8 +347,8 @@ export default ({ size }) => {
       ctx.rotate(_.random(-Math.PI / 2, Math.PI / 2));
       ctx.translate(-canvas.width / 2, -canvas.height / 2);
 
-      ctx.fillStyle = baseColor.hex();
-      ctx.font = `bold ${Math.min(canvas.width, canvas.height) / 2}px 'Helvetica Neue'`;
+      ctx.fillStyle = chroma.mix(baseColor.brighten(), baseColor).hex();
+      ctx.font = `bold ${Math.min(canvas.width, canvas.height) / 3}px 'Helvetica Neue'`;
       let count = 0;
       s.do.blurIterations(() => ++count);
       ctx.globalAlpha = 1.0 / count;
@@ -364,7 +357,7 @@ export default ({ size }) => {
       });
       ctx.globalAlpha = 1;
 
-      ctx.fillText(initials(s.my.currentArticle.title),  canvas.width / 2,  canvas.height / 2);
+      ctx.fillText(initials(s.my.currentArticle.title), canvas.width / 2, canvas.height / 2);
 
       /*     ctx.textAlign = 'left';
       ctx.fillStyle = baseColor.brighten(2).desaturate(2).hex();
@@ -377,8 +370,8 @@ export default ({ size }) => {
       s.do.canvasToTarget();
     })
     .method('blurIterations', (s, fn) => {
-      _.range(-50, 51, 25).forEach((x) => {
-        _.range(-50, 51, 25).forEach((y) => {
+      _.range(-40, 41, 20).forEach((x) => {
+        _.range(-40, 41, 20).forEach((y) => {
           fn(x, y);
         });
       });
@@ -401,8 +394,8 @@ export default ({ size }) => {
       ctx.restore();
     })
     .on('resize', (s) => {
+      console.log('resize');
       s.do.tryInit(true);
-      s.do.canvasToTarget();
     }, true)
     .watchFlat('size', 'onSize')
     .property('currentArticle', null)

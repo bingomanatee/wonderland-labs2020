@@ -1,0 +1,33 @@
+.SiteHeaderContainer {
+  flex-basis: 100%;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+.SiteHeaderContainer h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin: 0;
+  padding: 0;
+  grid-column-start: first-col-start;
+  grid-column-end: first-col-end;
+  grid-row-start: first-row-start;
+  grid-row-end: first-row-end;
+}
+.SiteHeaderContainer h1.small {
+  font-size: 1.5rem;
+  grid-row-end: user;
+}
+.SiteHeaderContainer .user {
+  grid-row-start: first-row-start;
+  grid-row-end: first-row-end;
+  grid-column-start: user;
+  grid-column-end: first-col-end;
+}
+.SiteHeaderContainer .user.small {
+  grid-row-start: user;
+  grid-row-end: second-row-end;
+  grid-column-start: first-col-start;
+}
+
+/*# sourceMappingURL=SiteHeader.css.map */

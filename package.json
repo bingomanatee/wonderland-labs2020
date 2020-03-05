@@ -27,6 +27,7 @@
     "grommet": "^2.7.9",
     "grommet-icons": "^4.3.0",
     "lodash": "^4.17.15",
+    "main.css": "^2.0.0",
     "parcel-bundler": "^1.12.3",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",

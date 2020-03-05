@@ -1,10 +1,9 @@
-@import './lota-baker/lota-baker.css';
 h1, h2, h3, h4, h5, h6 {
-  font-family: LotaGrotesque-Black, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Walbaum18pt-Medium", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 div, p {
-  font-family: "Lota Grotesque", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Franca", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .panel-label {

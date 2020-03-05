@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, ResponsiveContext, ThemeContext } from 'grommet';
 import styled from 'styled-components';
-
 const buttonTheme = {
   button: {
     border: {
@@ -35,6 +34,7 @@ export default ({ children }) => (
     {(size) => {
       switch (size) {
         case 'small':
+        case 'medium':
           return (
             <Box
               as="section"
@@ -57,7 +57,7 @@ export default ({ children }) => (
           return (
             <Box
               as="section"
-              direction="row"
+              direction="column"
               gap="large"
               pad="small"
               align="stretch"

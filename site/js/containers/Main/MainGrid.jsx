@@ -3,8 +3,8 @@ import { Grid, ResponsiveContext } from 'grommet';
 
 const largeGrid = (children) => (
   <Grid
-    rows={['5rem', 'auto']}
-    columns={['10rem', 'auto']}
+    rows={['5rem', '1fr']}
+    columns={['15rem', 'auto']}
     gap="none"
     pad="none"
     fill
@@ -21,7 +21,24 @@ const largeGrid = (children) => (
 
 const smallGrid = (children) => (
   <Grid
-    rows={['5rem', '3rem', 'auto']}
+    rows={['5rem', '1fr', '3rem']}
+    columns={['auto']}
+    gap="none"
+    pad="none"
+    fill
+    areas={[
+      { name: 'header', start: [0, 0], end: [0, 0] },
+      { name: 'main', start: [0, 1], end: [0, 1] },
+      { name: 'nav', start: [0, 2], end: [0, 2] },
+    ]}
+    className="site-frame"
+  >
+    {children}
+  </Grid>
+);
+const medGrid = (children) => (
+  <Grid
+    rows={['5rem', '3rem', '1fr']}
     columns={['auto']}
     gap="none"
     pad="none"
@@ -38,6 +55,7 @@ const smallGrid = (children) => (
 );
 
 export default ({ children }) => (
+
   <ResponsiveContext.Consumer>
     {(size) => {
       switch (size) {
@@ -46,7 +64,7 @@ export default ({ children }) => (
           break;
 
         case 'medium':
-          return smallGrid(children);
+          return medGrid(children);
           break;
 
         case 'large':

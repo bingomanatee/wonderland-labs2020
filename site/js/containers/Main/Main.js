@@ -9,7 +9,7 @@ import Content from '../../views/Content';
 import Navigation from '../Navigation';
 
 import MainGrid from './MainGrid';
-
+import './main.css';
 // pages
 
 import Home from '../../pages/Home';
@@ -27,13 +27,13 @@ export default class Main extends PureComponent {
               <Background />
             </Box>
             <MainGrid>
-              <Box gridArea="header">
+              <Box gridArea="header" className="blurBehindMore">
                 <SiteHeader />
               </Box>
-              <Box gridArea="nav">
+              <Box gridArea="nav" className="blurBehind">
                 <Navigation />
               </Box>
-              <Box gridArea="main">
+              <Box gridArea="main" className="blurBehind">
                 <Content>
                   <Switch>
                     <Route path="/" exact component={Home} />

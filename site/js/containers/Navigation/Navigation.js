@@ -4,6 +4,7 @@ import {
 } from 'grommet';
 import styled from 'styled-components';
 import NavGrid from './NavGrid';
+import MenuButton from './../../views/MenuButton';
 
 const NavItem = styled.div`
 margin-top: 1rem;
@@ -22,10 +23,10 @@ text-align: center;
 const NavButton = (props) => (
   <ResponsiveContext.Consumer>
     {(size) => {
-      const Container = NavItemSmall; //  (size === 'small') ? NavItemSmall : NavItem;
+      const Container = (size === 'large') ? NavItem : NavItemSmall;
       return (
         <Container>
-          <NavButtonInner {...props} plain={false} fill={true}>
+          <NavButtonInner {...props} plain={false} fill>
             {props.children}
           </NavButtonInner>
         </Container>
@@ -43,12 +44,12 @@ export default class Navigation extends PureComponent {
     const { history } = this.props;
     return (
       <NavGrid>
-        <NavButton onClick={() => history.push('/')}>
+        <MenuButton onClick={() => history.push('/')}>
           Home
-        </NavButton>
-        <NavButton onClick={() => history.push('/beta')}>
+        </MenuButton>
+        <MenuButton onClick={() => history.push('/beta')}>
           Beta
-        </NavButton>
+        </MenuButton>
       </NavGrid>
     );
   }

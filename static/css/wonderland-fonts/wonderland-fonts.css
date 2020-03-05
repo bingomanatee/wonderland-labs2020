@@ -1,0 +1,103 @@
+/**
+ * @license
+ * MyFonts Webfont Build ID 3876494, 2020-03-04T14:36:05-0500
+ * 
+ * The fonts listed in this notice are subject to the End User License
+ * Agreement(s) entered into by the website owner. All other parties are 
+ * explicitly restricted from using the Licensed Webfonts(s).
+ * 
+ * You may obtain a valid license at the URLs below.
+ * 
+ * Webfont: Franca-Book by Rene Bieder
+ * URL: https://www.myfonts.com/fonts/rene-bieder/franca/book/
+ * Copyright: Copyright &#x00A9; 2018 by Ren&#x00E9; Bieder. All rights reserved.
+ * 
+ * Webfont: Franca-BookItalic by Rene Bieder
+ * URL: https://www.myfonts.com/fonts/rene-bieder/franca/book-italic/
+ * Copyright: Copyright &#x00A9; 2018 by Ren&#x00E9; Bieder. All rights reserved.
+ * 
+ * Webfont: Franca-Bold by Rene Bieder
+ * URL: https://www.myfonts.com/fonts/rene-bieder/franca/bold/
+ * Copyright: Copyright &#x00A9; 2018 by Ren&#x00E9; Bieder. All rights reserved.
+ * 
+ * Webfont: Franca-Medium by Rene Bieder
+ * URL: https://www.myfonts.com/fonts/rene-bieder/franca/medium/
+ * Copyright: Copyright &#x00A9; 2018 by Ren&#x00E9; Bieder. All rights reserved.
+ * 
+ * Webfont: Franca-BoldItalic by Rene Bieder
+ * URL: https://www.myfonts.com/fonts/rene-bieder/franca/bold-italic/
+ * Copyright: Copyright &#x00A9; 2018 by Ren&#x00E9; Bieder. All rights reserved.
+ * 
+ * Webfont: Franca-MediumItalic by Rene Bieder
+ * URL: https://www.myfonts.com/fonts/rene-bieder/franca/medium-italic/
+ * Copyright: Copyright &#x00A9; 2018 by Ren&#x00E9; Bieder. All rights reserved.
+ * 
+ * Webfont: Walbaum12pt-SemiBold by Monotype
+ * URL: https://www.myfonts.com/fonts/mti/walbaum/12-semibold/
+ * Copyright: Copyright &#x00A9; 2018 Monotype Imaging Inc. All rights reserved.
+ * 
+ * Webfont: Walbaum18pt-Medium by Monotype
+ * URL: https://www.myfonts.com/fonts/mti/walbaum/18-medium/
+ * Copyright: Copyright &#x00A9; 2018 Monotype Imaging Inc. All rights reserved.
+ * 
+ * Webfont: Walbaum60pt-Medium by Monotype
+ * URL: https://www.myfonts.com/fonts/mti/walbaum/60-medium/
+ * Copyright: Copyright &#x00A9; 2018 Monotype Imaging Inc. All rights reserved.
+ * 
+ * Webfont: Walbaum12pt-SemiBoldItalic by Monotype
+ * URL: https://www.myfonts.com/fonts/mti/walbaum/12-semibold-italic/
+ * Copyright: Copyright &#x00A9; 2018 Monotype Imaging Inc. All rights reserved.
+ * 
+ * Webfont: Walbaum18pt-MediumItalic by Monotype
+ * URL: https://www.myfonts.com/fonts/mti/walbaum/18-medium-italic/
+ * Copyright: Copyright &#x00A9; 2018 Monotype Imaging Inc. All rights reserved.
+ * 
+ * Webfont: Walbaum60pt-MediumItalic by Monotype
+ * URL: https://www.myfonts.com/fonts/mti/walbaum/60-medium-italic/
+ * Copyright: Copyright &#x00A9; 2018 Monotype Imaging Inc. All rights reserved.
+ * 
+ * 
+ * 
+ * © 2020 MyFonts Inc
+*/
+
+
+/* @import must be at top of file, otherwise CSS will not work */
+@import url("//hello.myfonts.net/count/3b268e");
+
+  
+@font-face {font-family: 'Franca-Book';src: url('webfonts/3B268E_0_0.eot');src: url('webfonts/3B268E_0_0.eot?#iefix') format('embedded-opentype'),url('webfonts/3B268E_0_0.woff2') format('woff2'),url('webfonts/3B268E_0_0.woff') format('woff'),url('webfonts/3B268E_0_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'Franca-BookItalic';src: url('webfonts/3B268E_1_0.eot');src: url('webfonts/3B268E_1_0.eot?#iefix') format('embedded-opentype'),url('webfonts/3B268E_1_0.woff2') format('woff2'),url('webfonts/3B268E_1_0.woff') format('woff'),url('webfonts/3B268E_1_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'Franca-Bold';src: url('webfonts/3B268E_2_0.eot');src: url('webfonts/3B268E_2_0.eot?#iefix') format('embedded-opentype'),url('webfonts/3B268E_2_0.woff2') format('woff2'),url('webfonts/3B268E_2_0.woff') format('woff'),url('webfonts/3B268E_2_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'Franca-Medium';src: url('webfonts/3B268E_3_0.eot');src: url('webfonts/3B268E_3_0.eot?#iefix') format('embedded-opentype'),url('webfonts/3B268E_3_0.woff2') format('woff2'),url('webfonts/3B268E_3_0.woff') format('woff'),url('webfonts/3B268E_3_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'Franca-BoldItalic';src: url('webfonts/3B268E_4_0.eot');src: url('webfonts/3B268E_4_0.eot?#iefix') format('embedded-opentype'),url('webfonts/3B268E_4_0.woff2') format('woff2'),url('webfonts/3B268E_4_0.woff') format('woff'),url('webfonts/3B268E_4_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'Franca-MediumItalic';src: url('webfonts/3B268E_5_0.eot');src: url('webfonts/3B268E_5_0.eot?#iefix') format('embedded-opentype'),url('webfonts/3B268E_5_0.woff2') format('woff2'),url('webfonts/3B268E_5_0.woff') format('woff'),url('webfonts/3B268E_5_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'Walbaum12pt-SemiBold';src: url('webfonts/3B268E_6_0.eot');src: url('webfonts/3B268E_6_0.eot?#iefix') format('embedded-opentype'),url('webfonts/3B268E_6_0.woff2') format('woff2'),url('webfonts/3B268E_6_0.woff') format('woff'),url('webfonts/3B268E_6_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'Walbaum18pt-Medium';src: url('webfonts/3B268E_7_0.eot');src: url('webfonts/3B268E_7_0.eot?#iefix') format('embedded-opentype'),url('webfonts/3B268E_7_0.woff2') format('woff2'),url('webfonts/3B268E_7_0.woff') format('woff'),url('webfonts/3B268E_7_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'Walbaum60pt-Medium';src: url('webfonts/3B268E_8_0.eot');src: url('webfonts/3B268E_8_0.eot?#iefix') format('embedded-opentype'),url('webfonts/3B268E_8_0.woff2') format('woff2'),url('webfonts/3B268E_8_0.woff') format('woff'),url('webfonts/3B268E_8_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'Walbaum12pt-SemiBoldItalic';src: url('webfonts/3B268E_9_0.eot');src: url('webfonts/3B268E_9_0.eot?#iefix') format('embedded-opentype'),url('webfonts/3B268E_9_0.woff2') format('woff2'),url('webfonts/3B268E_9_0.woff') format('woff'),url('webfonts/3B268E_9_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'Walbaum18pt-MediumItalic';src: url('webfonts/3B268E_A_0.eot');src: url('webfonts/3B268E_A_0.eot?#iefix') format('embedded-opentype'),url('webfonts/3B268E_A_0.woff2') format('woff2'),url('webfonts/3B268E_A_0.woff') format('woff'),url('webfonts/3B268E_A_0.ttf') format('truetype');}
+ 
+  
+@font-face {font-family: 'Walbaum60pt-MediumItalic';src: url('webfonts/3B268E_B_0.eot');src: url('webfonts/3B268E_B_0.eot?#iefix') format('embedded-opentype'),url('webfonts/3B268E_B_0.woff2') format('woff2'),url('webfonts/3B268E_B_0.woff') format('woff'),url('webfonts/3B268E_B_0.ttf') format('truetype');}
+ 
