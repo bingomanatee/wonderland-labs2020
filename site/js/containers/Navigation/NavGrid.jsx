@@ -40,7 +40,6 @@ export default ({ children }) => (
               as="section"
               direction="row"
               gap="large"
-              pad="small"
               align="stretch"
               fill="horizontal"
             >
@@ -59,7 +58,6 @@ export default ({ children }) => (
               as="section"
               direction="column"
               gap="large"
-              pad="small"
               align="stretch"
               fill="horizontal"
             >

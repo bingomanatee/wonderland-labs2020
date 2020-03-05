@@ -68,7 +68,7 @@ export default {
     },
     breakpoints: {
       small: {
-        value: 768,
+        value: 800,
         borderSize: {
           xsmall: '1px',
           small: '2px',
@@ -97,7 +97,7 @@ export default {
         },
       },
       medium: {
-        value: 1536,
+        value: 1400,
       },
       large: {},
     },

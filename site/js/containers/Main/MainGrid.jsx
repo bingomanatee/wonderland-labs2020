@@ -21,7 +21,7 @@ const largeGrid = (children) => (
 
 const smallGrid = (children) => (
   <Grid
-    rows={['5rem', '1fr', '3rem']}
+    rows={['5rem', '1fr', 'auto']}
     columns={['auto']}
     gap="none"
     pad="none"
@@ -38,7 +38,7 @@ const smallGrid = (children) => (
 );
 const medGrid = (children) => (
   <Grid
-    rows={['5rem', '3rem', '1fr']}
+    rows={['5rem', 'auto', '1fr']}
     columns={['auto']}
     gap="none"
     pad="none"

@@ -1,35 +1,42 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, useState } from 'react';
 import {
   Button, DropButton, ResponsiveContext, Box,
 } from 'grommet';
 import styled from 'styled-components';
 import NavGrid from './NavGrid';
-import MenuButton from './../../views/MenuButton';
+import MenuButton from '../../views/MenuButton';
+import PageCarrot from '../../views/PageCarrot';
 
-const NavItem = styled.div`
-margin-top: 1rem;
-margin-right: 1rem;
-margin-left: -1px;
-`;
-
-const NavItemSmall = styled.div`
-margin: 2px;
-height: 2rem;
-`;
-const NavButtonInner = styled(Button)`
-text-align: center;
-`;
+const MenuButtonSmall = (props) => {
+  const [hover, setHover] = useState(false);
+  return (
+    <Box
+      onClick={props.onClick}
+      align="center"
+      direction="horizontal"
+      background={hover ? 'white' : 'rgba(0,0,0,0.125)'}
+      className={hover ? 'elevated' : ''}
+      pad="2px"
+      margin={{ left: '0.5rem', top: '0.25rem', bottom: '0.25rem' , right: '0.5rem' }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      gap="small"
+      round="4px"
+    >
+      <div>
+        {props.children}
+      </div>
+      <PageCarrot hover={hover} />
+    </Box>
+  );
+};
 
 const NavButton = (props) => (
   <ResponsiveContext.Consumer>
     {(size) => {
-      const Container = (size === 'large') ? NavItem : NavItemSmall;
+      const Container = (size === 'large') ? MenuButton : MenuButtonSmall;
       return (
-        <Container>
-          <NavButtonInner {...props} plain={false} fill>
-            {props.children}
-          </NavButtonInner>
-        </Container>
+        <Container {...props} />
       );
     }}
   </ResponsiveContext.Consumer>
@@ -44,12 +51,12 @@ export default class Navigation extends PureComponent {
     const { history } = this.props;
     return (
       <NavGrid>
-        <MenuButton onClick={() => history.push('/')}>
+        <NavButton onClick={() => history.push('/')}>
           Home
-        </MenuButton>
-        <MenuButton onClick={() => history.push('/beta')}>
+        </NavButton>
+        <NavButton onClick={() => history.push('/beta')}>
           Beta
-        </MenuButton>
+        </NavButton>
       </NavGrid>
     );
   }

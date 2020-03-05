@@ -248,6 +248,11 @@ export default ({ size }) => {
         return;
       }
 
+      s.my.targetColors.forEach((color, cell) => {
+        s.do.dissolveCell(cell, color);
+      });
+      return;
+
       let cellsToRedraw = [];
 
       if (s.my.targetColors.size < 2 * PIXEL_CLAMP) {
@@ -282,7 +287,7 @@ export default ({ size }) => {
         ...lightCells.slice(0, Math.max(lightCells.length / 2, PIXEL_CLAMP / 2)),
         ...darkCells];
 
-      cellsToRedraw = cellsToRedraw.slice(0, cellsToRedraw.length / 2);
+      cellsToRedraw = cellsToRedraw.slice(0, cellsToRedraw.length  * 2/3);
 
       if (cellsToRedraw.length || s.my.cellsToRedraw.length) {
         s.do.setCellsToRedraw(cellsToRedraw);
@@ -428,7 +433,7 @@ export default ({ size }) => {
     }
   });
 
-  const debounceDraw = _.debounce(stream.do.drawArticle, 100);
+  const debounceDraw = _.debounce(stream.do.drawArticle, 50);
 
   stream.subscribe(false, (err) => {
     console.log('bg error: ', err);

@@ -3,50 +3,66 @@ import React, { useState } from 'react';
 function SvgMenubutton(props) {
   const [hover, setHover] = useState(false);
   return (
-    <svg width="210px" height="70px" viewBox="0 0 210 70">
-      <title>menu button</title>
-      <desc>Created with Sketch.</desc>
+    <svg
+      data-name="MenuButton"
+      viewBox="0 0 237 90"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onMouseDown={() => { if (props.onClick) props.onClick(); }}
+    >
+      <defs>
+        <filter id="menuItemShadow">
+          <feDropShadow floodColor="black" floodOpacity="1" dx="5" dy="5" stdDeviation="2" />
+        </filter>
+      </defs>
+
       <g
-        id="menu-button"
-        stroke="none"
-        strokeWidth={1}
-        fill="none"
-        fillRule="evenodd"
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        onMouseDown={() => { if (props.onClick) props.onClick(); }}
+        id="offset"
+        style={{
+          opacity: props.selected ? 1 : 0,
+          fill: props.selected ? 'rgb(255,204,0)' : '',
+        }}
       >
-        <g id="Group-9" transform="translate(-31.000000, 0.000000)">
-          <path
-            d="M181.599497,60.0000719 L181.526583,59.9280576 L15.8114286,59.9280576 C9.85005714,59.9280576 5,55.0708633 5,49.1007194 L5,20.8992806 C5,14.9291367 9.85005714,10.0719424 15.8114286,10.0719424 L181.526583,10.0719424 L181.599497,9.99992806 C188.178377,3.55136691 196.862217,0 206.051429,0 C225.32192,0 241,15.7011511 241,35 C241,54.2988489 225.32192,70 206.051429,70 C196.862217,70 188.178377,66.4486331 181.599497,60.0000719 Z"
-            id="Fill-1"
-            fillOpacity={0.468449519}
-            fill={hover ? 'black' : '#020202'}
-          />
-          <path
-            d="M183.766842,55.0001681 L183.691891,54.9159664 L5.78484848,54.9159664 C2.59513333,54.9159664 0,52.3147899 0,49.1176471 L0,20.8823529 C0,17.6852101 2.59513333,15.0840336 5.78484848,15.0840336 L183.691891,15.0840336 L183.766842,14.9998319 C189.443036,8.64487395 197.572006,5 206.069697,5 C222.573618,5 236,18.4576471 236,35 C236,51.5423529 222.573618,65 206.069697,65 C197.572006,65 189.443036,61.3551261 183.766842,55.0001681 Z"
-            id="Fill-5"
-            fill={hover ? 'white' : 'rgba(255,255,255,0.8)'}
-          />
-          <text
-            id="REACT-APPS"
-            fontFamily="Franca-Bold, Helvetica Neue, sans-serif"
-            fontSize={24}
-            fontStyle="condensed"
-            fontWeight="bold"
-            fill="#000000"
-          >
-            <tspan x={54.888} y={43}>
-              {props.children}
-            </tspan>
-          </text>
-        </g>
-        <polygon
-          id="Path"
-          fill="#000000"
-          points="167 16.2006957 196.4527 34.8932991 167 53.9739084 179.99363 34.8932991"
+        <path
+          d="M185.25,79.17a38.59,38.59,0,0,1-23.09-7.59,18.29,18.29,0,0,0-10.89-3.71H-8.59V12.63H151a18.63,18.63,0,0,0,11.11-3.7,38.56,38.56,0,0,1,23.1-7.6c.52,0,1,0,1.55,0a39.12,39.12,0,0,1,37.33,37.06,38.92,38.92,0,0,1-38.88,40.75Z"
         />
       </g>
+      <g
+        data-id="body"
+        style={{
+          filter: hover ? 'url(#menuItemShadow)' : '',
+        }}
+      >
+        <path
+          d="M186.61,6.35A33.81,33.81,0,0,0,165.12,13,23.73,23.73,0,0,1,151,17.63H-3.59V62.87H151.27a23.34,23.34,0,0,1,13.86,4.69A33.92,33.92,0,1,0,186.61,6.35Z"
+          style={{
+            fill: hover ? 'white' : 'rgba(0,0,0,0.125)',
+          }}
+        />
+      </g>
+      <text
+        data-id="text"
+        transform="translate(146.32 47.82)"
+        style={{
+          fontSize: 21,
+          fontFamily: 'Franca-SemiBold, Franca',
+          fontWeight: 600,
+          textAnchor: 'end',
+        }}
+      >
+        {props.children}
+      </text>
+      <polyline
+        id="arrow"
+        points="184 28 198 42 184 56"
+        style={{
+          fill: 'none',
+          stroke: hover ? 'black' : 'white',
+          strokeLinecap: 'round',
+          strokeMiterlimit: 10,
+          strokeWidth: 4,
+        }}
+      />
     </svg>
   );
 }
