@@ -39,7 +39,6 @@ export default class SiteHeader extends PureComponent {
                 className={forSize(size, 'user small', 'user')}
                 size={forSize(size, 'small', '')}
                 align="center"
-                pad={forSize(size, 0, 0)}
               >
                 <Button plain href="/logout">User "Fred Smith"</Button>
               </Box>

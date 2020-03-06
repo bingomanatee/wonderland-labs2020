@@ -40,8 +40,9 @@ export default ({ children }) => (
               as="section"
               direction="row"
               gap="large"
-              align="stretch"
+              align="start"
               fill="horizontal"
+              wrap
             >
               <ThemeContext.Extend
                 value={smallButtonTheme}
@@ -58,7 +59,7 @@ export default ({ children }) => (
               as="section"
               direction="column"
               gap="large"
-              align="stretch"
+              align="start"
               fill="horizontal"
             >
               <ThemeContext.Extend

@@ -6,6 +6,8 @@ import styled from 'styled-components';
 import NavGrid from './NavGrid';
 import MenuButton from '../../views/MenuButton';
 import PageCarrot from '../../views/PageCarrot';
+import siteStore from '../../store/site.store';
+import navStream from '../../store/nav.store';
 
 const MenuButtonSmall = (props) => {
   const [hover, setHover] = useState(false);
@@ -13,15 +15,18 @@ const MenuButtonSmall = (props) => {
     <Box
       onClick={props.onClick}
       align="center"
-      direction="horizontal"
+      direction="row"
       background={hover ? 'white' : 'rgba(0,0,0,0.125)'}
       className={hover ? 'elevated' : ''}
-      pad="2px"
-      margin={{ left: '0.5rem', top: '0.25rem', bottom: '0.25rem' , right: '0.5rem' }}
+      pad={{left: '0.5rem', right:'0.25rem', top: '3px', bottom: '3px'}}
+      margin={{
+        left: '0.5rem', top: '0.25rem', bottom: '0.25rem', right: '0.5rem',
+      }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       gap="small"
       round="4px"
+      wrap={false}
     >
       <div>
         {props.children}
@@ -45,18 +50,39 @@ const NavButton = (props) => (
 export default class Navigation extends PureComponent {
   constructor(props) {
     super(props);
+    this.state = siteStore.value;
+    this.stream = siteStore;
+  }
+
+  componentDidMount() {
+    this.mounted = true;
+    this._sub = this.stream.subscribe((s) => {
+      if (this.mounted) {
+        this.setState(s.value);
+      }
+    }, (e) => {
+      console.log('error in stream', e);
+    });
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+    this._sub.unsubscribe();
   }
 
   render() {
     const { history } = this.props;
+    const { categories } = this.state;
     return (
       <NavGrid>
         <NavButton onClick={() => history.push('/')}>
           Home
         </NavButton>
-        <NavButton onClick={() => history.push('/beta')}>
-          Beta
-        </NavButton>
+        {categories.map((cat) => (
+          <NavButton onClick={() => history.push(`/cat/${cat.directory}`)}>
+            {cat.title}
+          </NavButton>
+        ))}
       </NavGrid>
     );
   }

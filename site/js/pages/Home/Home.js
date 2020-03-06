@@ -59,7 +59,6 @@ const YEAR = dayjs().year()
 
 const ArticleDate = ({ fileRevised, size }) => {
   const d = parseRD(fileRevised);
-  console.log('fileRevised:', fileRevised, 'd', d);
   if (!d) return '';
   let dateString = `[d.${d.format('D')}.m.${d.format('M')}.y.${d.format('YYYY')}]`
   if (d.year() !== YEAR) {
@@ -139,6 +138,7 @@ export default class Home extends PureComponent {
   componentWillUnmount() {
     this.mounted = false;
     this._sub.unsubscribe();
+    this._nsub.unsubscribe();
   }
 
   render() {
