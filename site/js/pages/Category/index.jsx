@@ -1,5 +1,5 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import Home from './Home';
+import Category from './Category';
 
-export default withRouter(Home);
+export default withRouter(Category);

@@ -542,7 +542,7 @@ For more information please see:
 ## Web Apps
 
 There are a couple of meta tags that provide information about a web app when
-added to the Home Screen on iOS:
+added to the Category Screen on iOS:
 
 * Adding `apple-mobile-web-app-capable` will make your web app chrome-less and
 provide the default iOS app view. You can control the color scheme of the
@@ -554,7 +554,7 @@ default view by adding `apple-mobile-web-app-status-bar-style`.
 ```
 
 * You can use `apple-mobile-web-app-title` to add a specific sites name for the
-Home Screen icon. This works since iOS 6.
+Category Screen icon. This works since iOS 6.
 
 ```html
 <meta name="apple-mobile-web-app-title" content="">

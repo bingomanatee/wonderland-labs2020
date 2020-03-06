@@ -16,7 +16,7 @@ const BLENDED = 1;
 const UNCHANGED = 0;
 
 const PIXEL_CLAMP = 200;
-const HEX_DIVS = 25;
+const HEX_DIVS = 35;
 
 function initials(string) {
   return string.split(/\s+/g)

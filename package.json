@@ -35,7 +35,8 @@
     "rect-cover": "^1.0.0",
     "styled-components": "^4.3.2",
     "svg.js": "^2.7.1",
-    "uuid": "^3.3.3"
+    "uuid": "^3.3.3",
+    "value": "^0.3.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",

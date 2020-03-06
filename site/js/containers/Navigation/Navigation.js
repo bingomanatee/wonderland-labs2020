@@ -2,12 +2,14 @@ import React, { PureComponent, useState } from 'react';
 import {
   Button, DropButton, ResponsiveContext, Box,
 } from 'grommet';
+import _ from 'lodash';
 import styled from 'styled-components';
 import NavGrid from './NavGrid';
 import MenuButton from '../../views/MenuButton';
 import PageCarrot from '../../views/PageCarrot';
 import siteStore from '../../store/site.store';
 import navStream from '../../store/nav.store';
+import encodePath from "../../utils/encodePath";
 
 const MenuButtonSmall = (props) => {
   const [hover, setHover] = useState(false);
@@ -78,11 +80,11 @@ export default class Navigation extends PureComponent {
         <NavButton onClick={() => history.push('/')}>
           Home
         </NavButton>
-        {categories.map((cat) => (
-          <NavButton onClick={() => history.push(`/cat/${cat.directory}`)}>
+        {_(categories).filter('published').map((cat) => (
+          <NavButton key={cat.directory} onClick={() => history.push(`/cat/${encodePath(cat.directory)}`)}>
             {cat.title}
           </NavButton>
-        ))}
+        )).value()}
       </NavGrid>
     );
   }
