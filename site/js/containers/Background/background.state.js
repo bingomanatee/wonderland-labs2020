@@ -342,7 +342,7 @@ export default ({ size }) => {
       const baseColor = stringRGB(s.my.currentArticle.title);
       const { canvas } = s.my;
       ctx.save();
-      ctx.fillStyle = baseColor.saturate(2).hex();
+      ctx.fillStyle = baseColor.brighten().hex();
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.textAlign = 'center';
@@ -352,7 +352,7 @@ export default ({ size }) => {
       ctx.rotate(_.random(-Math.PI / 2, Math.PI / 2));
       ctx.translate(-canvas.width / 2, -canvas.height / 2);
 
-      ctx.fillStyle = chroma.mix(baseColor.brighten(), baseColor).hex();
+      ctx.fillStyle = baseColor.darken(0).hex();
       ctx.font = `bold ${Math.min(canvas.width, canvas.height) / 3}px 'Helvetica Neue'`;
       let count = 0;
       s.do.blurIterations(() => ++count);
@@ -361,7 +361,6 @@ export default ({ size }) => {
         ctx.fillText(initials(s.my.currentArticle.title), x + canvas.width / 2, y + canvas.height / 2);
       });
       ctx.globalAlpha = 1;
-
       ctx.fillText(initials(s.my.currentArticle.title), canvas.width / 2, canvas.height / 2);
 
       /*     ctx.textAlign = 'left';

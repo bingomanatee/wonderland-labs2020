@@ -21,6 +21,8 @@ export default class Category extends PureComponent {
     this._sub = this.stream.subscribe((s) => {
       if (this.mounted) {
         this.setState(s.value);
+        console.log('---- category.category = ', s.my.category);
+        navStream.do.setCategory(s.my.category);
       }
     }, (e) => {
       console.log('error in stream', e);

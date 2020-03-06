@@ -9,7 +9,7 @@ import MenuButton from '../../views/MenuButton';
 import PageCarrot from '../../views/PageCarrot';
 import siteStore from '../../store/site.store';
 import navStream from '../../store/nav.store';
-import encodePath from "../../utils/encodePath";
+import encodePath from '../../utils/encodePath';
 
 const MenuButtonSmall = (props) => {
   const [hover, setHover] = useState(false);
@@ -20,7 +20,9 @@ const MenuButtonSmall = (props) => {
       direction="row"
       background={hover ? 'white' : 'rgba(0,0,0,0.125)'}
       className={hover ? 'elevated' : ''}
-      pad={{left: '0.5rem', right:'0.25rem', top: '3px', bottom: '3px'}}
+      pad={{
+        left: '0.5rem', right: '0.25rem', top: '3px', bottom: '3px',
+      }}
       margin={{
         left: '0.5rem', top: '0.25rem', bottom: '0.25rem', right: '0.5rem',
       }}
@@ -52,7 +54,7 @@ const NavButton = (props) => (
 export default class Navigation extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = siteStore.value;
+    this.state = { ...siteStore.value, category: navStream.my.category };
     this.stream = siteStore;
   }
 
@@ -65,23 +67,28 @@ export default class Navigation extends PureComponent {
     }, (e) => {
       console.log('error in stream', e);
     });
+
+    this._nsub = navStream.subscribe((s) => {
+      this.setState({ category: s.my.category });
+    });
   }
 
   componentWillUnmount() {
     this.mounted = false;
     this._sub.unsubscribe();
+    this._nsub.unsubscribe();
   }
 
   render() {
     const { history } = this.props;
-    const { categories } = this.state;
+    const { categories, category } = this.state;
     return (
       <NavGrid>
         <NavButton onClick={() => history.push('/')}>
           Home
         </NavButton>
         {_(categories).filter('published').map((cat) => (
-          <NavButton key={cat.directory} onClick={() => history.push(`/cat/${encodePath(cat.directory)}`)}>
+          <NavButton selected={_.get(category, 'directory') === cat.directory} key={cat.directory} onClick={() => history.push(`/cat/${encodePath(cat.directory)}`)}>
             {cat.title}
           </NavButton>
         )).value()}

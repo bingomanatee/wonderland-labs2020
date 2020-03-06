@@ -30,13 +30,11 @@ export default class Background extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    console.log('component updated with ', prevProps, 'to', this.props);
     const size = _.get(this, 'props.size');
     if (!size) return;
     if (
       (_.get(size, 'width') !== _.get(prevProps, 'size.width'))
       || (_.get(size, 'height') !== _.get(prevProps, 'size.height'))) {
-      console.log('------------ resize');
       this.stream.do.setSize(size);
     }
   }
