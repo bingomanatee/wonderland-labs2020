@@ -3,9 +3,21 @@ import {
 } from 'grommet';
 import React, { Component } from 'react';
 import _ from 'lodash';
+
+
 import readStore from './read.store';
 import PageFrame from '../../views/PageFrame';
 import HeadBlock from '../../views/HeadBlock';
+
+const ReactMarkdown = require('react-markdown');
+const htmlParser = require('react-markdown/plugins/html-parser');
+
+// See https://github.com/aknuds1/html-to-react#with-custom-processing-instructions
+// for more info on the processing instructions
+const parseHtml = htmlParser({
+  isValidNode: (node) => node.type !== 'script',
+  processingInstructions: [/* ... */],
+});
 
 export default class Read extends Component {
   constructor(props) {
@@ -53,6 +65,11 @@ export default class Read extends Component {
         <HeadBlock>
           <h1>{title || '...'}</h1>
         </HeadBlock>
+        <ReactMarkdown
+          source={content}
+          escapeHtml={false}
+          astPlugins={[parseHtml]}
+        />
       </PageFrame>
     );
   }

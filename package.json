@@ -30,6 +30,7 @@
     "lodash": "^4.17.15",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
+    "react-markdown": "^4.3.1",
     "react-router-dom": "^5.0.1",
     "react-sizeme": "^2.6.7",
     "rect-cover": "^1.0.0",

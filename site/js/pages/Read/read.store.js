@@ -1,5 +1,6 @@
 import { ValueStream } from '@wonderlandlabs/looking-glass-engine';
 import axios from 'axios';
+import navStream from '../../store/nav.store';
 
 export default ({ history }) => {
   const { pathname } = history.location;
@@ -24,6 +25,7 @@ export default ({ history }) => {
             return;
           }
           const { title, content } = data;
+          navStream.do.setArticle(data);
           console.log('title:', title);
           s.do.setTitle(title);
           s.do.setContent(content);
