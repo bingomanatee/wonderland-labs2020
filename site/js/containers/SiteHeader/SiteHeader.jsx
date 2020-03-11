@@ -40,7 +40,6 @@ export default class SiteHeader extends PureComponent {
                 size={forSize(size, 'small', '')}
                 align="center"
               >
-                <Button plain href="/logout">User "Fred Smith"</Button>
               </Box>
             </SiteHeaderGrid>
           )}
@@ -50,3 +49,5 @@ export default class SiteHeader extends PureComponent {
     );
   }
 }
+
+// <Button  plain href="/logout">User "Fred Smith"</Button>

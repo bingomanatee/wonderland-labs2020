@@ -56,6 +56,7 @@ export default class Home extends PureComponent {
                     <ArticleLink
                       currentArticle={this.state.article}
                       size={size}
+                      category={siteStore.do.catForArticle(article)}
                       history={history}
                       key={article.path}
                       article={article}

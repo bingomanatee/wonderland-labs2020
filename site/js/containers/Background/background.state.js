@@ -15,8 +15,10 @@ const FINISHED = 2;
 const BLENDED = 1;
 const UNCHANGED = 0;
 
-const PIXEL_CLAMP = 200;
-const HEX_DIVS = 35;
+const PIXEL_CLAMP = 20;
+const CANVAS_RATIO = 10;
+const HEX_DIVS_HI_RES = 25;
+const HEX_DIVS_LO_RES = 12;
 
 function initials(string) {
   return string.split(/\s+/g)
@@ -39,7 +41,8 @@ const stringRGB = (str) => {
     const value = (hash >> (i * 8)) & 255;
     rgb[i] = value;
   }
-  return chroma(...rgb).brighten(2);
+  const [h] = chroma(...rgb).hsv();
+  return chroma.hsv(h, 0.5, 1);
 };
 
 export default ({ size }) => {
@@ -51,6 +54,7 @@ export default ({ size }) => {
     .property('height', height || 100, 'number')
     .property('ele', null)
     .property('svg', null)
+    .property('hexDivs', HEX_DIVS_HI_RES, 'number')
     .property('matrix', new Hexes({ scale: 50, pointy: true }))
     .property('coords', new Map())
     .watchFlat('ele', (s, e) => {
@@ -69,48 +73,64 @@ export default ({ size }) => {
       }
       s.my.svg.size(s.my.width, s.my.height);
     })
+    .method('reframe', (s) => {
+      s.do.stopTransform();
+
+      s.do.updateSVG();
+      // console.log('making coords from ', s.my.width, s.my.height);
+      s.do.recreateHexes();
+    })
     .method(
       'tryInit',
       (s, reset) => {
-        console.log('tryInit');
         if (s.my.init && !reset) {
           console.log('tryInit abort');
           return;
         }
 
-        if (!(s.my.ele && s.my.width > 100 && s.my.height > 100)) {
-          console.log('init aborted - bad state');
-          return;
-        }
-
-        s.do.updateSVG();
-
-        // console.log('making coords from ', s.my.width, s.my.height);
-
-        s.do.stopTransform();
-        requestAnimationFrame(() => {
-          s.do.recreateHexes();
-          if (s.my.currentArticle) {
-            s.do.resizeCanvas();
-            s.do.drawArticle();
-          } else {
-            s.do.canvasToTarget(true);
-            s.do.setImage('/img/bunny-rabbit.jpg');
-          }
-        });
+        s.do.reframe();
+        s.do.drawCurrentImage();
         s.do.setInit(true);
       },
       true,
     )
+    .method('stopTransform', (s) => {
+      s.my.coords.forEach((c) => { c.dissolveTime = 0; });
+    })
+    .method('drawCurrentImage', (s) => {
+      if (!(s.my.ele && s.my.width > 100 && s.my.height > 100)) {
+        return;
+      }
+      s.do.stopTransform();
+      requestAnimationFrame(() => {
+        if (s.my.currentArticle) {
+          s.do.resizeCanvas();
+          s.do.drawArticle();
+        } else if (s.my.imageResource) {
+          s.do.drawImageResource();
+        } else {
+          s.do.canvasToTarget(true);
+          s.do.setImage('/img/bunny-rabbit.jpg');
+        }
+      });
+    })
     .method('recreateHexes', (s) => {
-      const hexScale = N(s.my.width).plus(s.my.height).div(2).div(HEX_DIVS)
-        .plus(5)
-        .max(20).value;
+      if (!s.my.svg) {
+        return;
+      }
+
+      s.my.svg.clear();
+
+      console.log(
+        '================= recreating hexes -- hexDivs === ',
+        s.my.hexDivs,
+      );
+      const hexScale = N(s.my.width).min(s.my.height)
+        .div(s.my.hexDivs).value;
       s.do.setMatrix(new Hexes({ scale: hexScale, pointy: true }));
 
       const sizes = [-s.my.width / 2, -s.my.height / 2, s.my.width * 1.5, s.my.height * 1.5];
       const coords = s.my.matrix.floodRect(...sizes, true);
-      console.log('getting hexes for: ', sizes);
       const map = new Map();
 
       coords.forEach((c) => {
@@ -127,8 +147,8 @@ export default ({ size }) => {
     }, true)
     .method('resizeCanvas', (s) => {
       const canvas = document.createElement('canvas');
-      canvas.width = s.my.width * 2;
-      canvas.height = s.my.height * 2;
+      canvas.width = N(s.my.width).times(2).div(CANVAS_RATIO).value;
+      canvas.height = N(s.my.height).times(2).div(CANVAS_RATIO).value;
       s.do.setCanvas(canvas);
     })
     .property('image', '', 'string')
@@ -164,9 +184,7 @@ export default ({ size }) => {
       const dw = (image.width) * scale;
       const dh = (image.height) * scale;
 
-      canvas.getContext('2d').drawImage(image, x, y,
-        dw,
-        dh);
+      canvas.getContext('2d').drawImage(image, x, y, dw, dh);
       s.do.setCanvas(canvas);
       s.do.canvasToTarget();
     }, true)
@@ -180,8 +198,22 @@ export default ({ size }) => {
     .property('active', true, 'boolean')
     .property('colors', new Map())
     .property('targetColors', new Map())
-    .method('canvasToTarget', (s, init) => {
-      console.log('---- canvasToTarget', init);
+    .method('drawCurrentImage', (s) => {
+      if (!(s.my.ele && s.my.width > 100 && s.my.height > 100)) {
+        return;
+      }
+      s.do.stopTransform();
+      requestAnimationFrame(() => {
+        if (s.my.currentArticle) {
+          s.do.drawArticle();
+        } else if (s.my.imageResource) {
+          s.do.drawImageResource();
+        } else {
+          s.do.setImage('/img/bunny-rabbit.jpg');
+        }
+      });
+    })
+    .method('canvasToTarget', (s) => {
       if (!s.my.svg) {
         return;
       }
@@ -189,151 +221,63 @@ export default ({ size }) => {
       if (!s.my.canvas) {
         return;
       }
+
       const ctx = s.my.canvas.getContext('2d');
+
+      const t = Date.now();
+      const midWidth = s.my.width / 2;
+      const midHeight = s.my.height / 2;
+
       s.my.coords.forEach((c, i) => {
         if (c.poly) {
           const p = c.toXY(s.my.matrix);
-          p.x += s.my.width / 2;
-          p.y += s.my.height / 2;
+          p.x = (p.x + midWidth) / CANVAS_RATIO;
+          p.y = (p.y + midHeight) / CANVAS_RATIO;
           try {
-            const color = getCanvasPixelColor(ctx, p.x, p.y);
-            const color2 = getCanvasPixelColor(ctx, p.x + 1, p.y + 1);
-            const h = chroma(_.mean([color.r, color2.r]), _.mean([color.g, color2.g]), _.mean([color.b, color2.b])).hex();
-            s.my.targetColors.set(i, typeof h === 'string' ? h : h.css());
+            const colorValue = getCanvasPixelColor(ctx, p.x, p.y);
+            c.color = colorValue.rgb;
           } catch (err) {
             console.log('error in poly color: ', err);
           }
         }
       });
+
+      console.log(
+        'canvasToTarget time:', Date.now() - t,
+      );
       s.do.dissolve();
     })
-    .method('setHexColor', (s, i, color) => {
-      s.my.colors.set(i, color);
-      const c = s.my.coords.get(i);
-      if (c && c.poly) {
-        c.poly.fill(color).stroke(color);
-      }
-    })
-    .method('dissolveCell', (s, cell, color) => {
-      if (!s.my.targetColors.has(cell)) {
-        return UNCHANGED;
-      }
-      if (!color) {
-        color = s.my.targetColors.get(cell);
-      }
-
-      if (!s.my.colors.has(cell)) {
-        s.my.colors.set(cell, color);
-        s.do.setHexColor(cell, color);
-        return FINISHED;
-      }
-      const currentColor = s.my.colors.get(cell);
-      if (currentColor === color) {
-        return FINISHED;
-      }
-      // if (chroma.distance(color, currentColor) < 5) {
-      s.do.setHexColor(cell, color);
-      return FINISHED;
-      //  }
-
-      // const target = chroma.mix(color, currentColor, 0.25).hex();
-      // s.do.setHexColor(cell, target);
-      // return BLENDED;
-    })
     .method('dissolve', (s) => {
-      if (!s.my.canvas) {
-        return;
-      }
-      if (!s.my.targetColors.size) {
-        return;
-      }
+      const time = Date.now();
 
-      s.my.targetColors.forEach((color, cell) => {
-        s.do.dissolveCell(cell, color);
+      s.my.coords.forEach((c) => {
+        c.dissolveTime = time + _.random(1, 10) * 50;
       });
-      return;
-
-      let cellsToRedraw = [];
-
-      if (s.my.targetColors.size < 2 * PIXEL_CLAMP) {
-        s.do.setCellsToRedraw(Array.from(s.my.targetColors.keys()));
-        return;
-      }
-      let lightCells = [];
-      let darkCells = [];
-
-      s.my.targetColors.forEach((color, cell) => {
-        const currentColor = s.my.colors.get(cell);
-        if (!currentColor) {
-          cellsToRedraw.push(cell);
-          return;
-        }
-        if (currentColor === color) {
-          return;
-        }
-
-        const lum = _.sum(chroma(color).gl());
-        const tLum = _.sum(chroma(currentColor).gl());
-        if ((lum > 2.5) || (tLum > 2.5)) {
-          lightCells.push(cell);
-        } else {
-          darkCells.push(cell);
-        }
-      });
-      darkCells = _.shuffle(darkCells);
-      lightCells = _.shuffle(lightCells);
-
-      cellsToRedraw = [...cellsToRedraw,
-        ...lightCells.slice(0, Math.max(lightCells.length / 2, PIXEL_CLAMP / 2)),
-        ...darkCells];
-
-      cellsToRedraw = cellsToRedraw.slice(0, cellsToRedraw.length  * 2/3);
-
-      if (cellsToRedraw.length || s.my.cellsToRedraw.length) {
-        s.do.setCellsToRedraw(cellsToRedraw);
-      }
+      s.do.changeColors();
     })
-    .property('cellsToRedraw', [], 'array')
-    .watchFlat('cellsToRedraw', 'digestCellsToRedrawChunks')
-    .property('digesting', false, 'boolean')
-    .method('digestCellsToRedrawChunks', (s) => {
-      if (s.my.digesting) {
-        return;
-      }
+    .property('changing', false, 'boolean')
+    .method('changeColors', (s) => {
+      if (s.my.changing) return;
+      s.do.setChanging(true);
+      let remaining = 0;
 
-      // eslint-disable-next-line prefer-destructuring
-      const cellsToRedraw = s.my.cellsToRedraw;
+      const time = Date.now();
 
-      if (!cellsToRedraw.length) {
-        if (s.my.targetColors.size) {
-          requestAnimationFrame(s.do.dissolve);
-        } else {
-          console.log('done with dissolve');
-        }
-        return;
-      }
-
-      s.do.setDigesting(true);
-      const cellsToRedrawRandom = _(cellsToRedraw).shuffle().value();
-      const leftOver = cellsToRedrawRandom.slice(100);
-
-      try {
-        cellsToRedrawRandom.slice(0, 100).forEach((cell) => {
-          const result = s.do.dissolveCell(cell);
-          if (result === FINISHED) {
-            s.my.targetColors.delete(cell);
-          } else if (result === BLENDED) {
-            leftOver.push(result);
+      s.my.coords.forEach((c) => {
+        if (c.dissolveTime > time) {
+          ++remaining;
+        } else if (c.dissolveTime > 0 && c.dissolveTime <= time && c.color) {
+          if (c.poly) {
+            c.poly.fill(c.color);
+            c.dissolveTime = 0;
           }
-        });
-      } catch (err) {
-        console.log('error: ', err);
+        }
+      });
+      s.do.setChanging(false);
+      if (remaining > 0) {
+        requestAnimationFrame(() => s.do.changeColors());
       }
-
-      s.do.setDigesting(false);
-      s.do.setCellsToRedraw(leftOver);
     })
-    .property('dissolveCells', [], 'array')
     .method('drawArticle', (s) => {
       if ((!s.my.canvas) || (!s.my.currentArticle)) {
         return;
@@ -354,52 +298,22 @@ export default ({ size }) => {
 
       ctx.fillStyle = baseColor.darken(0).hex();
       ctx.font = `bold ${Math.min(canvas.width, canvas.height) / 3}px 'Helvetica Neue'`;
-      let count = 0;
-      s.do.blurIterations(() => ++count);
-      ctx.globalAlpha = 1.0 / count;
-      s.do.blurIterations((x, y) => {
-        ctx.fillText(initials(s.my.currentArticle.title), x + canvas.width / 2, y + canvas.height / 2);
-      });
-      ctx.globalAlpha = 1;
       ctx.fillText(initials(s.my.currentArticle.title), canvas.width / 2, canvas.height / 2);
 
-      /*     ctx.textAlign = 'left';
-      ctx.fillStyle = baseColor.brighten(2).desaturate(2).hex();
-      ctx.translate(canvas.width / 3, canvas.height / 4);
-      ctx.rotate(Math.PI / 2);
-      ctx.font = `${Math.min(canvas.width, canvas.height) / 4}px 'Helvetica Neue'`;
-      ctx.fillText(s.my.currentArticle.title, 0, 0);
-   */
       ctx.restore();
-      s.do.canvasToTarget();
-    })
-    .method('blurIterations', (s, fn) => {
-      _.range(-40, 41, 20).forEach((x) => {
-        _.range(-40, 41, 20).forEach((y) => {
-          fn(x, y);
-        });
+      requestAnimationFrame(() => {
+        s.do.canvasToTarget();
       });
-    })
-    .method('blurCanvas', (s) => {
-      _.range(0, 6).forEach(s.do.blurCanvasIter);
-    })
-    .method('blurCanvasIter', (s) => {
-      const ctx = s.my.canvas.getContext('2d');
-      const image = new Image();
-      image.src = s.my.canvas.toDataURL();
-      let count = 0;
-      s.do.blurIterations(() => ++count);
-      ctx.save();
-      ctx.globalAlpha = 1 / count;
-      s.do.blurIterations((x, y) => {
-        ctx.drawImage(image, x, y, s.my.canvas.width, s.my.canvas.height);
-      });
-
-      ctx.restore();
     })
     .on('resize', (s) => {
       console.log('resize');
-      s.do.tryInit(true);
+      s.do.setHexDivs(HEX_DIVS_HI_RES);
+      if (s.my.init) {
+        s.do.reframe();
+        s.do.drawCurrentImage();
+      } else {
+        s.do.tryInit(true);
+      }
     }, true)
     .watchFlat('size', 'onSize')
     .property('currentArticle', null)

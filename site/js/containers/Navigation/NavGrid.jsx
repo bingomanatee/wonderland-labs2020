@@ -40,7 +40,7 @@ export default ({ children }) => (
               as="section"
               direction="row"
               gap="large"
-              align="start"
+              justify="center"
               fill="horizontal"
               wrap
             >

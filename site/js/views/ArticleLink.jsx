@@ -7,6 +7,7 @@ import forSize from '../utils/forSize';
 import PageCarrot from './PageCarrot';
 import navStream from '../store/nav.store';
 import parseRD from '../utils/parseRD';
+import encodePath from "../utils/encodePath";
 
 const SHADOW_INSET_COLOR = 'rgba(255,255,255,0.5)';
 
@@ -88,17 +89,25 @@ const ArticleBack = styled.div`
 }
 `;
 
-export default ({ article, size, history, currentArticle }) => (
+const Category = styled.div`
+color: rgba(0,0,0,0.666);
+  font-size: ${({ size }) => forSize(size, '0.8rem', '1rem')};
+`;
+
+export default ({
+  article, size, history, category, currentArticle,
+}) => (
   <ArticleBack
     size={size}
     onMouseLeave={() => navStream.do.setArticle(null)}
     onMouseEnter={() => navStream.do.setArticle(article)}
-    onClick={() => history.push(`/${article.path}`)}
+    onClick={() => history.push(`/read/${encodePath(article.path)}`)}
     style={articleStyle(article, size)}
   >
     <ArticleHead>
       <Box direction="column">
         {article.title}
+        {category ? <Category size={size}>{category.title}</Category> : ''}
         <ArticleDate {...article} size={size} />
       </Box>
       <PageCarrot hover={article === currentArticle} />

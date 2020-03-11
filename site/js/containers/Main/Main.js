@@ -18,6 +18,7 @@ import theme from '../../theme';
 
 import Home from '../../pages/Home';
 import Background from '../Background';
+import Read from '../../pages/Read';
 
 export default class Main extends PureComponent {
   render() {
@@ -40,6 +41,7 @@ export default class Main extends PureComponent {
                   <Switch>
                     <Route path="/" exact component={Home} />
                     <Route path="/cat/:path" component={Category} />
+                    <Route path="/read/:path" component={Read} />
                     <Route component={Home} />
                   </Switch>
                 </Content>

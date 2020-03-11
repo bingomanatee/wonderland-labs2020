@@ -23,7 +23,7 @@ function SvgMenubutton(props) {
         d="M184,35a17,17,0,0,1-8.15-2.09A7.51,7.51,0,0,0,172.2,32H-17V5H171a6.2,6.2,0,0,0,3.5-1.11A16.9,16.9,0,0,1,184,1h.33A17,17,0,0,1,184,35Z"
         style={{
           opacity: props.selected ? 1 : 0,
-          fill: props.selected ? 'rgb(255,204,0)' : '',
+          fill: 'black'
         }}
       />
       <g
@@ -36,7 +36,7 @@ function SvgMenubutton(props) {
           id="body"
           d="M184.29,3a14.89,14.89,0,0,0-8.64,2.55A8.23,8.23,0,0,1,171,7H-15V30H172.2a9.54,9.54,0,0,1,4.62,1.16A15,15,0,0,0,199,17.31,15.12,15.12,0,0,0,184.29,3Z"
           style={{
-            fill: hover ? 'white' : 'rgba(0,0,0,0.125)',
+            fill: hover || props.selected ? 'white' : 'rgba(0,0,0,0.125)',
           }}
         />
       </g>

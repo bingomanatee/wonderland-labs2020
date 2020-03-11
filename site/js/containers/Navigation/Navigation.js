@@ -11,6 +11,10 @@ import siteStore from '../../store/site.store';
 import navStream from '../../store/nav.store';
 import encodePath from '../../utils/encodePath';
 
+const CAT_RE = /cat\/([^/]+)/;
+const ART_RE = /read\/(.*)/;
+const ARTICLE_SUFFIX = /\/[^/.]+\.md$/;
+
 const MenuButtonSmall = (props) => {
   const [hover, setHover] = useState(false);
   return (
@@ -54,18 +58,33 @@ const NavButton = (props) => (
 export default class Navigation extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { ...siteStore.value, category: navStream.my.category };
+    this.state = { ...siteStore.value, category: navStream.my.category, location: _.get(props, 'history.location.pathname') };
+    if (this.unlisten) {
+      this.unlisten();
+    }
     this.stream = siteStore;
   }
 
   componentDidMount() {
     this.mounted = true;
+
+    this.unlisten = this.props.history.listen((location, action) => {
+      // location is an object like window.location
+      console.log('....history change: ', action, location.pathname, location.state);
+      if (this.mounted) {
+        this.setState({ location: _.get(location, 'pathname', '') });
+      }
+    });
+
     this._sub = this.stream.subscribe((s) => {
       if (this.mounted) {
         this.setState(s.value);
       }
     }, (e) => {
       console.log('error in stream', e);
+    }, () => {
+      this.unlisten();
+      this.unlisten = null;
     });
 
     this._nsub = navStream.subscribe((s) => {
@@ -80,15 +99,28 @@ export default class Navigation extends PureComponent {
   }
 
   render() {
-    const { history } = this.props;
-    const { categories, category } = this.state;
+    const { history, match } = this.props;
+    const { categories, category, location } = this.state;
+    console.log('>>>>>>>> rendering with location: ', location, 'category: ', category);
+    let pathname = location;
+    if (location) {
+      if (CAT_RE.test(location)) {
+        pathname = decodeURIComponent(CAT_RE.exec(location)[1]);
+      } else if (ART_RE.test(location)) {
+        pathname = decodeURIComponent(ART_RE.exec(location)[1]);
+        console.log('article path:', pathname);
+        pathname = pathname.replace(ARTICLE_SUFFIX, '');
+        console.log('after article suffix removal', pathname);
+      }
+    }
+    const { path } = (match || {});
     return (
       <NavGrid>
-        <NavButton onClick={() => history.push('/')}>
+        <NavButton selected={!pathname || (pathname === '/')} onClick={() => history.push('/')}>
           Home
         </NavButton>
         {_(categories).filter('published').map((cat) => (
-          <NavButton selected={_.get(category, 'directory') === cat.directory} key={cat.directory} onClick={() => history.push(`/cat/${encodePath(cat.directory)}`)}>
+          <NavButton selected={_.get(cat, 'directory') === pathname} key={cat.directory} onClick={() => history.push(`/cat/${encodePath(cat.directory)}`)}>
             {cat.title}
           </NavButton>
         )).value()}

@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
-import { ResponsiveContext } from 'grommet';
+import { ResponsiveContext, Text } from 'grommet';
 import _ from 'lodash';
 import PageFrame from '../../views/PageFrame';
+import HeadBlock from '../../views/HeadBlock';
 import siteStore from '../../store/site.store';
 import navStream from '../../store/nav.store';
 import ArticleLink from '../../views/ArticleLink';
@@ -21,7 +22,6 @@ export default class Category extends PureComponent {
     this._sub = this.stream.subscribe((s) => {
       if (this.mounted) {
         this.setState(s.value);
-        console.log('---- category.category = ', s.my.category);
         navStream.do.setCategory(s.my.category);
       }
     }, (e) => {
@@ -59,10 +59,12 @@ export default class Category extends PureComponent {
         <ResponsiveContext.Consumer>
           {(size) => (
             <>
-              <h1>{_.get(category, 'title', '...')}</h1>
-              <p>
-                {_.get(category, 'content', '...')}
-              </p>
+              <HeadBlock size={size}>
+                <h1>{_.get(category, 'title', '...')}</h1>
+                <Text>
+                  {_.get(category, 'content', '...')}
+                </Text>
+              </HeadBlock>
               <CategoryGrid>
                 {_(articles)
                   .filter('published')
