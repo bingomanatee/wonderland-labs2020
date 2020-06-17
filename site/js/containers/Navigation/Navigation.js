@@ -99,21 +99,19 @@ export default class Navigation extends PureComponent {
   }
 
   render() {
-    const { history, match } = this.props;
-    const { categories, category, location } = this.state;
-    console.log('>>>>>>>> rendering with location: ', location, 'category: ', category);
+    const { history } = this.props;
+    const { categories, location, account } = this.state;
+    console.log('navigation account:', account);
+
     let pathname = location;
     if (location) {
       if (CAT_RE.test(location)) {
         pathname = decodeURIComponent(CAT_RE.exec(location)[1]);
       } else if (ART_RE.test(location)) {
         pathname = decodeURIComponent(ART_RE.exec(location)[1]);
-        console.log('article path:', pathname);
         pathname = pathname.replace(ARTICLE_SUFFIX, '');
-        console.log('after article suffix removal', pathname);
       }
     }
-    const { path } = (match || {});
     return (
       <NavGrid>
         <NavButton selected={!pathname || (pathname === '/')} onClick={() => history.push('/')}>
@@ -124,6 +122,11 @@ export default class Navigation extends PureComponent {
             {cat.title}
           </NavButton>
         )).value()}
+        {(true || siteStore.do.isAdmin()) && (
+        <NavButton onClick={() => history.push('/create')}>
+          Create an Article
+        </NavButton>
+        )}
       </NavGrid>
     );
   }

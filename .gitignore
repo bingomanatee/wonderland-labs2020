@@ -14,3 +14,4 @@ builds
 /dist
 **/.scss-cache
 .sass-cache
+/site/js/containers/Background/background.state.old.js

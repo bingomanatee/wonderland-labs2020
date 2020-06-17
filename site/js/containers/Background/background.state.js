@@ -48,7 +48,14 @@ const stringRGB = (str) => {
 export default ({ size }) => {
   const width = _.get(size, 'width', 100);
   const height = _.get(size, 'height', 100);
-  const stream = new ValueStream('sceneManager')
+  let stream;
+  const debounceDraw = _.debounce(() => {
+    if (_.get(stream, 'do.drawCurrent')) {
+      stream.do.drawArticle();
+    }
+  }, 50);
+
+  stream = new ValueStream('sceneManager')
     .property('size', size || { width: 100, height: 100 })
     .property('width', width || 100, 'number')
     .property('height', height || 100, 'number')
@@ -76,6 +83,7 @@ export default ({ size }) => {
     .method('reframe', (s) => {
       s.do.stopTransform();
 
+      s.do.resizeCanvas();
       s.do.updateSVG();
       // console.log('making coords from ', s.my.width, s.my.height);
       s.do.recreateHexes();
@@ -87,31 +95,15 @@ export default ({ size }) => {
           console.log('tryInit abort');
           return;
         }
-
         s.do.reframe();
-        s.do.drawCurrentImage();
+        s.do.drawCurrent();
         s.do.setInit(true);
       },
       true,
     )
     .method('stopTransform', (s) => {
-      s.my.coords.forEach((c) => { c.dissolveTime = 0; });
-    })
-    .method('drawCurrentImage', (s) => {
-      if (!(s.my.ele && s.my.width > 100 && s.my.height > 100)) {
-        return;
-      }
-      s.do.stopTransform();
-      requestAnimationFrame(() => {
-        if (s.my.currentArticle) {
-          s.do.resizeCanvas();
-          s.do.drawArticle();
-        } else if (s.my.imageResource) {
-          s.do.drawImageResource();
-        } else {
-          s.do.canvasToTarget(true);
-          s.do.setImage('/img/bunny-rabbit.jpg');
-        }
+      s.my.coords.forEach((c) => {
+        c.dissolveTime = 0;
       });
     })
     .method('recreateHexes', (s) => {
@@ -141,10 +133,6 @@ export default ({ size }) => {
       });
       s.do.setCoords(map);
     })
-    .method('stopTransform', (s) => {
-      s.do.setTargetColors(new Map());
-      s.do.setCellsToRedraw([]);
-    }, true)
     .method('resizeCanvas', (s) => {
       const canvas = document.createElement('canvas');
       canvas.width = N(s.my.width).times(2).div(CANVAS_RATIO).value;
@@ -159,8 +147,8 @@ export default ({ size }) => {
         const i = new Image();
         i.src = img;
         i.onload = () => {
-          console.log('image loaded');
           s.do.setImageResource(i);
+          s.do.drawCurrent();
         };
       }
     })
@@ -168,6 +156,9 @@ export default ({ size }) => {
     .watchFlat('imageResource', 'drawImageResource')
     .method('drawImageResource', (s) => {
       s.do.resizeCanvas();
+      if (s.my.currentArticle) {
+        return;
+      }
 
       const image = s.my.imageResource;
       if (!image) {
@@ -198,17 +189,22 @@ export default ({ size }) => {
     .property('active', true, 'boolean')
     .property('colors', new Map())
     .property('targetColors', new Map())
-    .method('drawCurrentImage', (s) => {
+    .method('drawCurrent', (s) => {
+      console.log('drawCurrent: article = ', s.my.currentArticle, 'imageRes = ', s.my.imageResource);
       if (!(s.my.ele && s.my.width > 100 && s.my.height > 100)) {
+        console.log('drawCurrent: cannot draw in state:', s.value);
         return;
       }
       s.do.stopTransform();
       requestAnimationFrame(() => {
         if (s.my.currentArticle) {
+          console.log('drawCurrent: article');
           s.do.drawArticle();
         } else if (s.my.imageResource) {
-          s.do.drawImageResource();
+          console.log('drawCurrent: image');
+          s.do.drawImageResource(true);
         } else {
+          console.log('drawCurrent:  load image');
           s.do.setImage('/img/bunny-rabbit.jpg');
         }
       });
@@ -241,23 +237,21 @@ export default ({ size }) => {
           }
         }
       });
-
-      console.log(
-        'canvasToTarget time:', Date.now() - t,
-      );
       s.do.dissolve();
     })
     .method('dissolve', (s) => {
       const time = Date.now();
 
       s.my.coords.forEach((c) => {
-        c.dissolveTime = time + _.random(1, 10) * 50;
+        c.dissolveTime = time + _.random(1, 5) * 50;
       });
       s.do.changeColors();
     })
     .property('changing', false, 'boolean')
     .method('changeColors', (s) => {
-      if (s.my.changing) return;
+      if (s.my.changing) {
+        return;
+      }
       s.do.setChanging(true);
       let remaining = 0;
 
@@ -280,6 +274,7 @@ export default ({ size }) => {
     })
     .method('drawArticle', (s) => {
       if ((!s.my.canvas) || (!s.my.currentArticle)) {
+        console.log('cannot draw article', s.my.currentArticle, 'on', s.my.canvas);
         return;
       }
       const ctx = s.my.canvas.getContext('2d');
@@ -310,7 +305,7 @@ export default ({ size }) => {
       s.do.setHexDivs(HEX_DIVS_HI_RES);
       if (s.my.init) {
         s.do.reframe();
-        s.do.drawCurrentImage();
+        s.do.drawCurrent();
       } else {
         s.do.tryInit(true);
       }
@@ -341,20 +336,21 @@ export default ({ size }) => {
     );
 
   const nsSub = navStream.subscribe((ns) => {
+    if (!ns.my.article) {
+      if (ns.my.category && ns.my.category !== stream.my.currentArticle) {
+        stream.do.setCurrentArticle(ns.my.category);
+      }
+
+      return;
+    }
     if (stream.my.currentArticle !== ns.my.article) {
       stream.do.setCurrentArticle(ns.my.article);
     }
   });
 
-  const debounceDraw = _.debounce(stream.do.drawArticle, 50);
-
   stream.subscribe(false, (err) => {
     console.log('bg error: ', err);
   }, () => nsSub.unsubscribe());
-
-  setInterval(() => {
-    console.log('window width: ', window.innerWidth, 'background width: ', stream.my.width);
-  }, 4000);
 
   return stream;
 };

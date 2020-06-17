@@ -28,6 +28,8 @@ export default class Home extends PureComponent {
     this._nsub = navStream.subscribe((n) => {
       this.setState({ article: n.my.article });
     });
+
+    navStream.do.setCategory({ title: 'Wonder Land Labs' });
   }
 
   componentWillUnmount() {

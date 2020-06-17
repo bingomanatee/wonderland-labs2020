@@ -192,7 +192,7 @@ export default {
       background: 'selected',
       color: 'white',
     },
-    spacing: '24px',
+    spacing: "120%",
     size: {
       xxsmall: '48px',
       xsmall: '96px',

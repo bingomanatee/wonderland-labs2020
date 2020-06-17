@@ -1,13 +1,28 @@
 {
   "presets": [
-    [ "@babel/preset-env", {
-      "targets": { "node": "10" }
-    } ]
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "10"
+        }
+      }
+    ]
   ],
-  "plugins": [ "@babel/plugin-transform-modules-commonjs",
+  "plugins": [
+    [
+      "babel-plugin-styled-components",
+      {
+        "displayName": true,
+        "fileName": true
+      }
+    ],
+    "@babel/plugin-transform-modules-commonjs",
     [
       "@babel/plugin-transform-runtime",
-      { "regenerator": true }
+      {
+        "regenerator": true
+      }
     ]
   ]
 }

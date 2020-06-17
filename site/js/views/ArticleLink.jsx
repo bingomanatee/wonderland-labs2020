@@ -7,7 +7,9 @@ import forSize from '../utils/forSize';
 import PageCarrot from './PageCarrot';
 import navStream from '../store/nav.store';
 import parseRD from '../utils/parseRD';
-import encodePath from "../utils/encodePath";
+import encodePath from '../utils/encodePath';
+import ArticleDate from '../views/ArticleDate';
+import Category from '../views/Category';
 
 const SHADOW_INSET_COLOR = 'rgba(255,255,255,0.5)';
 
@@ -46,30 +48,6 @@ function articleStyle(article, size) {
   return {};
 }
 
-const YEAR = dayjs().year();
-
-const ArticleDateWrapper = styled.div`
-  font-size: ${({ size }) => forSize(size, '0.8rem', '1rem')};
-  color: rgb(72,0,0);
-  padding: 2px;
-  font-weight: normal;
-  text-shadow: none;
-`;
-
-const ArticleDate = ({ fileRevised, size }) => {
-  const d = parseRD(fileRevised);
-  if (!d) return '';
-  let dateString = `[d.${d.format('D')}.m.${d.format('M')}.y.${d.format('YYYY')}]`;
-  if (d.year() !== YEAR) {
-    dateString = `[y.${d.format('YYYY')}]`;
-  }
-  return (
-    <ArticleDateWrapper size={size}>
-      {dateString}
-    </ArticleDateWrapper>
-  );
-};
-
 const ArticleHead = ({ children }) => (
   <ResponsiveContext.Consumer>
     {(size) => <Headline size={size}>{children}</Headline>}
@@ -87,11 +65,6 @@ const ArticleBack = styled.div`
   background-color: rgba(255,255,255,0.85);
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
-`;
-
-const Category = styled.div`
-color: rgba(0,0,0,0.666);
-  font-size: ${({ size }) => forSize(size, '0.8rem', '1rem')};
 `;
 
 export default ({

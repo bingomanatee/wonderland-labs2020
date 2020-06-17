@@ -17,11 +17,6 @@ const buttonTheme = {
 
 const smallButtonTheme = {
   button: {
-    border: {
-      width: '1px',
-      radius: '3px',
-      color: 'accent-2',
-    },
     padding: {
       vertical: '2px',
       horizontal: '0.5rem',
@@ -61,6 +56,7 @@ export default ({ children }) => (
               gap="large"
               align="start"
               fill="horizontal"
+              pad={{top: '2rem'}}
             >
               <ThemeContext.Extend
                 value={smallButtonTheme}

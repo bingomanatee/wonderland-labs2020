@@ -5,12 +5,13 @@ import {
 import styled from 'styled-components';
 import './SiteHeader.css';
 import forSize from '../../utils/forSize';
+import User from '../User';
 
 const SiteHeaderGrid = styled.section`
 width:100%;
 display: grid;
 grid-template-columns: ${({ size }) => forSize(size, '[first-col-start] 1fr  [first-col-end]',
-    '[first-col-start] auto [user] 1fr [first-col-end]')};
+    '[first-col-start] auto [user] 300px [first-col-end]')};
 grid-template-rows:  ${({ size }) => forSize(size, '[first-row-start] auto [user] auto [second-row-end]',
     '[first-row-start] auto [first-row-end]')};
 padding-left: 1rem;
@@ -33,14 +34,10 @@ export default class SiteHeader extends PureComponent {
         <ResponsiveContext.Consumer>
           {(size) => (
             <SiteHeaderGrid size={size}>
-              <h1 className={forSize(size, 'small', '')}>Wonderland Labs</h1>
-              <Box
-                direction="row-reverse"
-                className={forSize(size, 'user small', 'user')}
-                size={forSize(size, 'small', '')}
-                align="center"
-              >
+              <Box align="center" justify="center">
+                <h1 className={forSize(size, 'small', '')}>Wonderland Labs</h1>
               </Box>
+              <Box justify="end"><User /></Box>
             </SiteHeaderGrid>
           )}
         </ResponsiveContext.Consumer>
