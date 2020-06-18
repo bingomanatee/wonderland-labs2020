@@ -19,7 +19,7 @@ const CreateFrame = styled.article` {
 class ChooseDir extends PureComponent {
   render() {
     const {
-      onChange, name, value, options,
+      onChange, value, options,
     } = this.props;
 
     return (
@@ -39,7 +39,7 @@ class ChooseDir extends PureComponent {
 
 // @TODO: duplication warning
 
-export default () => {
+export default (params) => {
   const [value, setValue] = useState('');
   const [store, setStore] = useState('');
   const [errors, setErrors] = useState({});
@@ -57,7 +57,7 @@ export default () => {
 
   // ---- sync errors from store
   useEffect(() => {
-    const articleStore = makeArticleStore();
+    const articleStore = makeArticleStore(params, setValue);
 
     setValue(articleStore.value);
     setStore(articleStore);
@@ -77,6 +77,17 @@ export default () => {
 
   if (!(value && store && categories.length)) {
     return '';
+  }
+
+  if (store && store.my.loading) {
+    return (
+      <PageFrame>
+        <Heading>
+          Loading
+          {params.match.params.path}
+        </Heading>
+      </PageFrame>
+    );
   }
 
   return (

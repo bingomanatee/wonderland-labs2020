@@ -15,6 +15,10 @@ export default ({ history }) => {
       }
     })
     .method('goHome', () => history.push('/'))
+    .method('goEdit', (s) => {
+      const encoded = encodeURIComponent(s.my.pathname.replace('/read/', ''));
+      history.push(`/edit/${encoded}`);
+    })
     .property('title', '', 'string')
     .property('content', '', 'string')
     .watchFlat('pathname', 'pathnameChange')
@@ -30,8 +34,6 @@ export default ({ history }) => {
       if (!newName) {
         return;
       }
-
-      console.log('============== pathnameChange loading ', newName);
       const article = newName.replace('/read/', '').replace(/\.md$/, '.json');
       const url = `https://wonderland-labs.herokuapp.com/api/articles/${article}`;
       axios.get(url)

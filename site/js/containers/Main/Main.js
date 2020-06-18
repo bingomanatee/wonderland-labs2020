@@ -58,7 +58,8 @@ export default class Main extends PureComponent {
                     <Route path="/" exact component={Home} />
                     <Route path="/cat/:path" component={Category} />
                     <Route path="/read/:path" component={Read} />
-                    {true || isAdmin ? <Route path="/create" component={Create} /> : ''}
+                    {isAdmin ? <Route path="/create" component={Create} /> : ''}
+                    {isAdmin ? <Route path="/edit/:path" component={Create} /> : ''}
                     <Route component={Home} />
                   </Switch>
                 </Content>

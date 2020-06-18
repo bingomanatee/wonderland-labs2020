@@ -1,7 +1,7 @@
 import {
   Text, TextInput, Box, Button, ResponsiveContext,
 } from 'grommet';
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import _ from 'lodash';
 import styled from 'styled-components';
 
@@ -10,6 +10,7 @@ import PageFrame from '../../views/PageFrame';
 import HeadBlock from '../../views/HeadBlock';
 import ArticleDate from '../../views/ArticleDate';
 import Category from '../../views/Category';
+import stateStream from '../../store/site.store';
 
 const BodyBlock = styled.article`
   margin: 2rem;
@@ -42,24 +43,20 @@ export default class Read extends Component {
 
     this.stream = readStore(props);
 
-    this.state = {...this.stream.state};
+    this.state = { ...this.stream.state };
   }
 
   componentWillUnmount() {
-    if (this._sub) {
-      this._sub.unsubscribe();
-    }
-    if (this.unlisten) {
-      this.unlisten();
-      this.unlisten = null;
-    }
+    this._sub.unsubscribe();
+    this._siteSub.unsubscribe();
+    if (this.unlisten) this.unlisten();
   }
 
   componentDidMount() {
     this._sub = this.stream.subscribe((s) => {
       this.setState(s.value);
     }, (err) => {
-      console.log('beta stream error: ', err);
+      console.log('read stream error: ', err);
     }, () => {
       if (this.unlisten) {
         this.unlisten();
@@ -67,9 +64,16 @@ export default class Read extends Component {
       }
     });
 
+    this._siteSub = stateStream.subscribe((s) => {
+      this.setState({
+        account: s.my.account,
+        isAdmin: s.do.isAdmin(),
+      });
+    });
+
     this.unlisten = this.props.history.listen((location, action) => {
       // location is an object like window.location
-      console.log('....history change: ', action, location.pathname, location.state);
+      // console.log('....history change: ', action, location.pathname, location.state);
       if (this.mounted) {
         this.stream.do.setPathname(location.pathname);
       }
@@ -77,7 +81,9 @@ export default class Read extends Component {
   }
 
   render() {
-    const {title, content, category} = this.state;
+    const {
+      title, content, category, isAdmin,
+    } = this.state;
     return (
 
       <ResponsiveContext.Consumer>
@@ -90,14 +96,14 @@ export default class Read extends Component {
             <BodyBlock className="blurBehindMore">
               <Box direction="row" justify="between" gap="large">
                 {category ? <Category size={size}>{category.title}</Category> : ''}
-                <ArticleDate {...this.state} size={size}/>
+                <ArticleDate {...this.state} size={size} />
               </Box>
               <ReactMarkdown
                 source={content}
                 escapeHtml={false}
                 astPlugins={[parseHtml]}
               />
-              <hr/>
+              <hr />
               <Box direction="row" justify="between" gap="large">
                 <Button onClick={this.stream.do.goCat} plain={false}>
                   View more articles in the
@@ -106,11 +112,12 @@ export default class Read extends Component {
                     <span key="q1">&quot;</span>,
                     `${_.get(category, 'title', '...')}`,
                     <span key="q2">&quot;</span>,
-                    ' '
+                    ' ',
                   ]}
                   section
                 </Button>
                 <Button primary onClick={this.stream.do.goHome} main plain={false}>Go Home</Button>
+                {isAdmin && <Button onClick={this.stream.do.goEdit} plain={false}>Edit Article</Button>}
               </Box>
             </BodyBlock>
           </PageFrame>
