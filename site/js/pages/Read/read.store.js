@@ -3,7 +3,7 @@ import axios from 'axios';
 import navStream from '../../store/nav.store';
 import stateStream from '../../store/site.store';
 import encodePath from '../../utils/encodePath';
-
+import { articleUrl } from "../../utils/paths";
 export default ({ history }) => {
   const { pathname } = history.location;
   console.log('pathname: ', pathname, 'of ', history.location);
@@ -35,7 +35,8 @@ export default ({ history }) => {
         return;
       }
       const article = newName.replace('/read/', '').replace(/\.md$/, '.json');
-      const url = `https://wonderland-labs.herokuapp.com/api/articles/${article}`;
+      const url = articleUrl(article);
+      console.log('--- reading ', article, '-url-', url);
       axios.get(url)
         .then(({ data }) => {
           console.log('article data: ', data);

@@ -3,7 +3,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import redirectCallback from './clearUrlOnRedirectAuth';
 import auth0FromHook from './auth0FromHook';
-import articleUrl from '../utils/articleUrl';
+import { apiPath } from '../utils/paths';
 
 const stream = new ValueStream('mainStore')
   .property('auth0', null)
@@ -15,7 +15,7 @@ const stream = new ValueStream('mainStore')
   .property('homepageArticles', [], 'array')
   .property('categories', [], 'array')
   .property('categoriesLoaded', false, 'boolean')
-  .method('loadCategories', (s) => axios.get('https://wonderland-labs.herokuapp.com/api/categories')
+  .method('loadCategories', (s) => axios.get(apiPath('categories'))
     .then(({ data }) => {
       console.log('categories', data);
       s.do.setCategories(data);
@@ -28,7 +28,7 @@ const stream = new ValueStream('mainStore')
     const { directory } = a;
     return _.find(s.my.categories, { directory });
   })
-  .method('loadHomepageArticles', (s) => axios.get('https://wonderland-labs.herokuapp.com/api/homepage-articles')
+  .method('loadHomepageArticles', (s) => axios.get( apiPath('homepage-articles'))
     .then(({ data }) => {
       s.do.setHomepageArticles(data);
     }))
@@ -75,7 +75,7 @@ const stream = new ValueStream('mainStore')
       if (isNew) {
         result = await axios({
           method: 'POST',
-          url: articleUrl(),
+          url: paths(),
           headers: {
             access_token: accessToken,
             sub,
@@ -85,7 +85,7 @@ const stream = new ValueStream('mainStore')
       } else {
         result = await axios({
           method: 'PUT',
-          url: articleUrl(article),
+          url: paths(article),
           headers: {
             access_token: accessToken,
             sub,

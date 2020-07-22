@@ -3,7 +3,7 @@ import { ValueStream } from '@wonderlandlabs/looking-glass-engine';
 import axios from 'axios';
 import siteStore from '../../store/site.store';
 import navStream from '../../store/nav.store';
-import articleUrl from '../../utils/articleUrl';
+import { articleUrl } from '../../utils/paths';
 
 export default function makeArticleStore(params, setValue) {
   const store = new ValueStream('article')

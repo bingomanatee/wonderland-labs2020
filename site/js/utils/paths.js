@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import encodePath from './encodePath';
 
-const API_URL = 'https://wonderland-labs.herokuapp.com/api';
+///const API_URL = 'http://localhost:3000/api';
+const API_URL = 'https://wll-rails-app.herokuapp.com/api';
 const ARE = /^articles\//;
 const asPath = (input, keepArticles = false) => {
   if (!input) {
@@ -18,8 +19,12 @@ const asPath = (input, keepArticles = false) => {
   return _.toString(input).replace(/\.[\w]+$/, '');
 };
 
-export default function articleUrl(path, keepArticles) {
+export function articleUrl(path, keepArticles) {
   if (!path) return `${API_URL}/articles`;
   const shortPath = encodePath(asPath(path, keepArticles));
   return `${API_URL}/articles/${shortPath}.json`;
+}
+
+export function apiPath(path) {
+  return `${API_URL}/${path}`;
 }

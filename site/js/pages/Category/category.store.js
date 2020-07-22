@@ -1,8 +1,8 @@
 import { ValueStream } from '@wonderlandlabs/looking-glass-engine';
 import axios from 'axios';
 import encodePath from '../../utils/encodePath';
-import navStream from '../../store/nav.store';
-
+import navStream  from '../../store/nav.store';
+import { apiPath } from "../../utils/paths";
 const stream = new ValueStream('catStore')
   .property('articles', [], 'array')
   .property('category', null)
@@ -13,7 +13,7 @@ const stream = new ValueStream('catStore')
     }
   })
   .method('loadCategoryArticles', (s, path) => axios.get(
-    `https://wonderland-labs.herokuapp.com/api/categories/${path}.json`,
+    apiPath(`categories/${path}.json`),
   )
     .then(({ data }) => {
       console.log('articles', data);
