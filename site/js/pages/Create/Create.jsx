@@ -1,12 +1,12 @@
 import {
-  Box, Button, CheckBox, Form, FormField, Heading, Select, Text, TextArea,
-} from 'grommet';
-import styled from 'styled-components';
+  Box, Button, CheckBox, Form, FormField, Heading, Select, Text, TextArea, Layer
+}                                                    from 'grommet';
+import styled                                        from 'styled-components';
 import React, { PureComponent, useEffect, useState } from 'react';
-import _ from 'lodash';
-import siteStore from '../../store/site.store';
-import PageFrame from '../../views/PageFrame';
-import makeArticleStore from './articleStore';
+import _                                             from 'lodash';
+import siteStore                                     from '../../store/site.store';
+import PageFrame                                     from '../../views/PageFrame';
+import makeArticleStore                              from './createStore';
 
 const CreateFrame = styled.article` {
   #create-content {
@@ -26,9 +26,9 @@ class ChooseDir extends PureComponent {
       <Select
         labelKey="title"
         value={value}
-        onChange={({ option }) => {
+        onChange={({option}) => {
           console.log('changing to ', option);
-          onChange({ target: { value: option } });
+          onChange({target: {value: option}});
         }}
         options={options}
         valueKey="directory"
@@ -90,68 +90,82 @@ export default (params) => {
     );
   }
 
+  const currentPath = store.do.currentPath();
+  // note -- setIsDuplicate(true) will hide the dialog box -- until the
   return (
 
     <PageFrame>
       <CreateFrame>
-        <Box background="rgba(255,255,255,0.8)" pad="medium" fill="both">
-          <Form
-            value={value}
-            onChange={(v) => {
-              setValue(v);
-              store.do.update(v);
-            }}
-            onSubmit={store.do.submit}
-            errors={errors}
-          >
-            <Heading>Create an Article</Heading>
-            <Box>
-              <Text weight="bold">Title</Text>
-              <FormField name="title" />
-            </Box>
-            <Box>
-              <Text weight="bold">Directory</Text>
-              <FormField
-                name="directory"
-                options={categories}
-                onChange={(e) => {
-                  value.directory = e.target.value;
-                  // / console.log('>>>> directory set to ', value.directory);
-                  store.do.setDirectory(value.directory);
-                }}
-                component={ChooseDir}
-              />
-            </Box>
-            <Box>
-              <Text weight="bold">Name</Text>
-              <FormField name="name" />
-            </Box>
-            <Box>
-              <Text weight="bold">Published</Text>
-              <FormField name="published" component={CheckBox} />
-            </Box>
-            <Box>
-              <Text weight="bold">On Homepage</Text>
-              <FormField name="onHomepage" component={CheckBox} />
-            </Box>
-            <Box>
-              <Text weight="bold">Description</Text>
-              <FormField name="description" component={TextArea} />
-            </Box>
-            <Box id="create-content">
-              <Text weight="bold">Content</Text>
-              <FormField name="content" component={TextArea} />
-            </Box>
-            <Button
-              primary
-              disabled={store.do.hasErrors()}
-              type="submit"
-              plain={false}
+          {store.my.isDuplicate && (store.my.confirmedPath !== currentPath) &&
+          <Layer modal={true} reference={document}><Box direction="column" fill="horizontal" pad="large" border={{
+            width: '2px', color: 'black'
+          }}>
+            The article you are trying to save already exists.
+          <Box direction="row" gap="medium" justify="center">
+            <Button onClick={() => store.do.setConfirmedPath(currentPath)} plain={false} primary>Replace Existing Article</Button>
+            <Button onClick={() => store.do.setIsDuplicate(true)} plain={false}>Cancel</Button>
+          </Box>
+          </Box>
+          </Layer>}
+
+          <Box background="rgba(255,255,255,0.8)" pad="medium" fill="both">
+            <Form
+              value={value}
+              onChange={(v) => {
+                setValue(v);
+                store.do.update(v);
+              }}
+              onSubmit={store.do.submit}
+              errors={errors}
             >
-              Create
-            </Button>
-          </Form>
-        </Box>
+              <Heading>Create an Article</Heading>
+              <Box>
+                <Text weight="bold">Title</Text>
+                <FormField name="title"/>
+              </Box>
+              <Box>
+                <Text weight="bold">Directory</Text>
+                <FormField
+                  name="directory"
+                  options={categories}
+                  onChange={(e) => {
+                    value.directory = e.target.value;
+                    // / console.log('>>>> directory set to ', value.directory);
+                    store.do.setDirectory(value.directory);
+                  }}
+                  component={ChooseDir}
+                />
+              </Box>
+              <Box>
+                <Text weight="bold">Name</Text>
+                <FormField name="name"/>
+              </Box>
+              <Box>
+                <Text weight="bold">Published</Text>
+                <FormField name="published" component={CheckBox}/>
+              </Box>
+              <Box>
+                <Text weight="bold">On Homepage</Text>
+                <FormField name="onHomepage" component={CheckBox}/>
+              </Box>
+              <Box>
+                <Text weight="bold">Description</Text>
+                <FormField name="description" component={TextArea}/>
+              </Box>
+              <Box id="create-content">
+                <Text weight="bold">Content</Text>
+                <FormField name="content" component={TextArea}/>
+              </Box>
+              <Button
+                primary
+                disabled={store.do.hasErrors()}
+                type="submit"
+                plain={false}
+              >
+                Save
+              </Button>
+            </Form>
+          </Box>
       </CreateFrame>
     </PageFrame>
   );

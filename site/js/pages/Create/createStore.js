@@ -4,6 +4,7 @@ import axios from 'axios';
 import siteStore from '../../store/site.store';
 import navStream from '../../store/nav.store';
 import { articleUrl } from '../../utils/paths';
+import lGet from 'lodash/get';
 
 export default function makeArticleStore(params, setValue) {
   const store = new ValueStream('article')
@@ -15,12 +16,42 @@ export default function makeArticleStore(params, setValue) {
     .property('onHomepage', false, 'boolean')
     .property('directory', {})
     .property('name', '', 'string')
+    .method('shortName', (s) => {
+      if (!s.my.name) return '';
+      return s.my.name.replace(/\..*$/, '') + '.md';
+    })
+    .property('confirmedPath', '')
+    .property('isDuplicate', false, 'boolean')
+    .method('currentPath', (s) => [s.my.directory.directory, s.do.shortName()].filter(a => a).join('/'))
+    .method('checkPath', async(s) => {
+      const url = articleUrl(s.do.currentPath(), true);
+      console.log('checking path for directory ', s.my.directory.directory, 'name', s.do.shortName(), 'currentPath', s.do.currentPath(), 'url:', url);
+      let result = {};
+
+      try {
+        result = await axios.get(url);
+      } catch (err) {
+        result.error = err;
+      }
+      console.log('--- check result: data:', result.data, 'error:', result.error)
+      s.do.setIsDuplicate(false);
+      if (lGet(result, 'data.path', '')) {
+        s.do.setIsDuplicate(true);
+      }
+      if (lGet(result, 'error.message')) {
+        s.do.setIsDuplicate(true);
+      }
+      return s.my.isDuplicate;
+    })
     .method('submit', async (s, isNew=true) => {
       if (s.do.hasErrors()) {
         console.log('has errors; not submitting');
         return;
       }
-
+      await s.do.checkPath();
+      if (s.my.isDuplicate && s.my.confirmedPath !== s.do.currentPath()) {
+        return;
+      }
       const data = s.do.submitData();
       console.log('submitting ', data, 'from ', s.value);
       siteStore.do.saveArticle(data, isNew);
@@ -44,13 +75,14 @@ export default function makeArticleStore(params, setValue) {
       .replace(/\/\//g, '/'))
     .method('update', (s, value) => {
       const {
-        title, published, content, directory, name, description,
+        title, published, content, directory, name, description, onHomepage
       } = value;
       s.do.setTitle(title);
       s.do.setContent(content);
       s.do.setPublished(published);
       s.do.setDescription(description);
       s.do.setDirectory(directory);
+      s.do.setOnHomepage(onHomepage);
       s.do.setName(name);
     }, true) // note -- following methods are derivation no-ops.
     .method('titleError', (s) => {
