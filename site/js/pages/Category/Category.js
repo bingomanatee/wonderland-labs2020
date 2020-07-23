@@ -68,8 +68,8 @@ export default class Category extends PureComponent {
               <CategoryGrid>
                 {_(articles)
                   .filter('published')
-                  .sortBy(({ fileRevised }) => {
-                    const d = parseRD(fileRevised);
+                  .sortBy(({ updated_at }) => {
+                    const d = parseRD(updated_at);
                     return d ? d.valueOf() : 0;
                   })
                   .reverse()

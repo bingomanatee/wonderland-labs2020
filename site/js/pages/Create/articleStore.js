@@ -15,7 +15,7 @@ export default function makeArticleStore(params, setValue) {
     .property('onHomepage', false, 'boolean')
     .property('directory', {})
     .property('name', '', 'string')
-    .method('submit', async (s) => {
+    .method('submit', async (s, isNew=true) => {
       if (s.do.hasErrors()) {
         console.log('has errors; not submitting');
         return;
@@ -23,7 +23,7 @@ export default function makeArticleStore(params, setValue) {
 
       const data = s.do.submitData();
       console.log('submitting ', data, 'from ', s.value);
-      siteStore.do.saveArticle(data, true);
+      siteStore.do.saveArticle(data, isNew);
       // @TODO: go to page?
     })
     .method('submitData', (s) => ({

@@ -16,7 +16,6 @@ const stream = new ValueStream('catStore')
     apiPath(`categories/${path}.json`),
   )
     .then(({ data }) => {
-      console.log('articles', data);
       navStream.do.setArticle(data);
       s.do.setCategory(data);
       s.do.setArticles(data.articles);
