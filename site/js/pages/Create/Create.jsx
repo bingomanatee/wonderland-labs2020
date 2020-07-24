@@ -49,6 +49,7 @@ export default (params) => {
   useEffect(() => {
     const sub = siteStore.subscribe((s) => {
       setCats(s.my.categories);
+      return () => sub.unsubscribe();
     });
 
     siteStore.do.loadCategories();
@@ -58,8 +59,7 @@ export default (params) => {
   // ---- sync errors from store
   useEffect(() => {
     const articleStore = makeArticleStore(params, setValue);
-
-    setValue(articleStore.value);
+    console.log('article store: ', articleStore);
     setStore(articleStore);
 
     const sub = articleStore.subscribe((s) => {
@@ -71,12 +71,16 @@ export default (params) => {
       };
 
       setErrors(err);
+    }, (err) => {
+      console.log('create store error: ', err);
     });
     return () => sub.unsubscribe();
   }, []);
 
+  console.log('---  >>> rendering store:', store, 'categories', categories, 'value:', value);
+
   if (!(value && store && categories.length)) {
-    return '';
+    return ' -- no value/ store or categories -- ';
   }
 
   if (store && store.my.loading) {
@@ -96,14 +100,15 @@ export default (params) => {
 
     <PageFrame>
       <CreateFrame>
-          {store.my.isDuplicate && (store.my.confirmedPath !== currentPath) &&
-          <Layer modal={true} reference={document}><Box direction="column" fill="horizontal" pad="large" border={{
+          {store.my.submitTried && store.my.isDuplicate && (store.my.confirmedPath !== currentPath) &&
+          <Layer modal={true} reference={document} onClose ={() => store.do.setIsDuplicate(false)}>
+            <Box direction="column" fill="horizontal" pad="large" gap="large" border={{
             width: '2px', color: 'black'
           }}>
-            The article you are trying to save already exists.
+           <Text> The article you are trying to save already exists.</Text>
           <Box direction="row" gap="medium" justify="center">
-            <Button onClick={() => store.do.setConfirmedPath(currentPath)} plain={false} primary>Replace Existing Article</Button>
-            <Button onClick={() => store.do.setIsDuplicate(true)} plain={false}>Cancel</Button>
+            <Button onClick={() => store.do.replace(true)} plain={false} primary>Replace Existing Article</Button>
+            <Button onClick={() => store.do.replace(false)} plain={false}>Cancel</Button>
           </Box>
           </Box>
           </Layer>}
@@ -115,10 +120,10 @@ export default (params) => {
                 setValue(v);
                 store.do.update(v);
               }}
-              onSubmit={store.do.submit}
+              onSubmit={() => store.do.submit()}
               errors={errors}
             >
-              <Heading>Create an Article</Heading>
+              <Heading>{store.my.isDuplicate ? 'Revise Article' : 'Create an Article'}</Heading>
               <Box>
                 <Text weight="bold">Title</Text>
                 <FormField name="title"/>
@@ -146,7 +151,7 @@ export default (params) => {
               </Box>
               <Box>
                 <Text weight="bold">On Homepage</Text>
-                <FormField name="onHomepage" component={CheckBox}/>
+                <FormField name="on_homepage" component={CheckBox}/>
               </Box>
               <Box>
                 <Text weight="bold">Description</Text>

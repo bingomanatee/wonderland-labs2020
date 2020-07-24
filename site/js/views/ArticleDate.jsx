@@ -13,8 +13,8 @@ const ArticleDateWrapper = styled.div`
   font-weight: normal;
   text-shadow: none;
 `;
-const ArticleDate = ({ fileRevised, size }) => {
-  const d = parseRD(fileRevised);
+const ArticleDate = ({ updated_at, size }) => {
+  const d = parseRD(updated_at);
   if (!d) return '';
   let dateString = `[d.${d.format('D')}.m.${d.format('M')}.y.${d.format('YYYY')}]`;
   if (d.year() !== YEAR) {

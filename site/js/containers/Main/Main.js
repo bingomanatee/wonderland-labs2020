@@ -46,13 +46,13 @@ export default class Main extends PureComponent {
               <Background />
             </Box>
             <MainGrid>
-              <Box gridArea="header" className="blurBehindMore">
+              <Box gridArea="header">
                 <SiteHeader />
               </Box>
-              <Box gridArea="nav" className="blurBehind">
+              <Box gridArea="nav">
                 <Navigation />
               </Box>
-              <Box gridArea="main" className="blurBehind">
+              <Box gridArea="main">
                 <Content>
                   <Switch>
                     <Route path="/" exact component={Home} />

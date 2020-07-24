@@ -70,7 +70,6 @@ export default class Navigation extends PureComponent {
 
     this.unlisten = this.props.history.listen((location, action) => {
       // location is an object like window.location
-      console.log('....history change: ', action, location.pathname, location.state);
       if (this.mounted) {
         this.setState({ location: _.get(location, 'pathname', '') });
       }
@@ -101,7 +100,6 @@ export default class Navigation extends PureComponent {
   render() {
     const { history } = this.props;
     const { categories, location, account } = this.state;
-    console.log('navigation account:', account);
 
     let pathname = location;
     if (location) {
@@ -122,7 +120,7 @@ export default class Navigation extends PureComponent {
             {cat.title}
           </NavButton>
         )).value()}
-        {(true || siteStore.do.isAdmin()) && (
+        {(siteStore.do.isAdmin()) && (
         <NavButton onClick={() => history.push('/create')}>
           Create an Article
         </NavButton>

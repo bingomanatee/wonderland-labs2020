@@ -1,19 +1,21 @@
-import _ from 'lodash';
+import _               from 'lodash';
 import { ValueStream } from '@wonderlandlabs/looking-glass-engine';
-import axios from 'axios';
-import siteStore from '../../store/site.store';
-import navStream from '../../store/nav.store';
-import { articleUrl } from '../../utils/paths';
-import lGet from 'lodash/get';
+import axios           from 'axios';
+import siteStore       from '../../store/site.store';
+import navStream       from '../../store/nav.store';
+import { articleUrl }  from '../../utils/paths';
+import lGet            from 'lodash/get';
+import encodePath      from "../../utils/encodePath";
 
 export default function makeArticleStore(params, setValue) {
+  const {history} = params;
   const store = new ValueStream('article')
     .property('editing', false, 'boolean')
     .property('title', '', 'string')
     .property('content', '', 'string')
     .property('description', '', 'string')
     .property('published', true, 'boolean')
-    .property('onHomepage', false, 'boolean')
+    .property('on_homepage', false, 'boolean')
     .property('directory', {})
     .property('name', '', 'string')
     .method('shortName', (s) => {
@@ -22,18 +24,22 @@ export default function makeArticleStore(params, setValue) {
     })
     .property('confirmedPath', '')
     .property('isDuplicate', false, 'boolean')
-    .method('currentPath', (s) => [s.my.directory.directory, s.do.shortName()].filter(a => a).join('/'))
+    .method('currentPath', (s, baseUrl) => {
+      const out = [s.my.directory.directory, s.do.shortName()].filter(a => a).join('/');
+      if (baseUrl) {
+        return encodePath(out);
+      }
+      return out;
+    })
     .method('checkPath', async(s) => {
       const url = articleUrl(s.do.currentPath(), true);
-      console.log('checking path for directory ', s.my.directory.directory, 'name', s.do.shortName(), 'currentPath', s.do.currentPath(), 'url:', url);
       let result = {};
-
       try {
         result = await axios.get(url);
       } catch (err) {
         result.error = err;
       }
-      console.log('--- check result: data:', result.data, 'error:', result.error)
+
       s.do.setIsDuplicate(false);
       if (lGet(result, 'data.path', '')) {
         s.do.setIsDuplicate(true);
@@ -43,19 +49,34 @@ export default function makeArticleStore(params, setValue) {
       }
       return s.my.isDuplicate;
     })
-    .method('submit', async (s, isNew=true) => {
+    .method('replace', (s, saveAnyway = false) => {
+      if (saveAnyway) {
+        s.do.submit(true);
+      }
+      s.do.setIsDuplicate(false);
+    })
+    .property('submitTried', false, 'boolean')
+    .method('submit', async (s, force = false) => {
       if (s.do.hasErrors()) {
-        console.log('has errors; not submitting');
         return;
       }
-      await s.do.checkPath();
-      if (s.my.isDuplicate && s.my.confirmedPath !== s.do.currentPath()) {
-        return;
+      if (!force) {
+        await s.do.checkPath();
+        if (s.my.isDuplicate) {
+          s.do.setSubmitTried(true);
+          return;
+        } else {
+          console.log('checked duplicate - not a duplicate, saving.')
+        }
+      } else {
+        console.log('forcing save without status check. ')
       }
       const data = s.do.submitData();
       console.log('submitting ', data, 'from ', s.value);
-      siteStore.do.saveArticle(data, isNew);
-      // @TODO: go to page?
+      siteStore.do.saveArticle(data)
+        .then(() => {
+          history.push('/read/' + s.do.currentPath(true));
+      });
     })
     .method('submitData', (s) => ({
       title: s.my.title,
@@ -64,7 +85,7 @@ export default function makeArticleStore(params, setValue) {
       directory: s.my.directory.directory,
       description: s.my.description,
       published: s.my.published,
-      on_homepage: s.my.onHomepage,
+      on_homepage: s.my.on_homepage,
       path: s.do.dirName(),
     }))
     .method('mdName', (s) => {
@@ -75,14 +96,14 @@ export default function makeArticleStore(params, setValue) {
       .replace(/\/\//g, '/'))
     .method('update', (s, value) => {
       const {
-        title, published, content, directory, name, description, onHomepage
+        title, published, content, directory, name, description, on_homepage
       } = value;
       s.do.setTitle(title);
       s.do.setContent(content);
       s.do.setPublished(published);
       s.do.setDescription(description);
       s.do.setDirectory(directory);
-      s.do.setOnHomepage(onHomepage);
+      s.do.setOn_homepage(on_homepage);
       s.do.setName(name);
     }, true) // note -- following methods are derivation no-ops.
     .method('titleError', (s) => {
@@ -111,21 +132,22 @@ export default function makeArticleStore(params, setValue) {
     })
     .property('loading', false, 'boolean')
     .method('load', async (s, pathname) => {
-      console.log('---- load starting for ', pathname);
       try {
         s.do.setLoading(true);
+        s.do.setIsDuplicate(false);
+
         const article = pathname.replace('/read/', '');
         const url = articleUrl(article, true);
-        console.log('---- loading article from ', url, 'for', article);
+
         const { data } = await axios.get(url);
-        console.log('-------article data: ', data);
         if (!(data && (typeof data === 'object'))) {
           return;
         }
         const {
-          title, content, fileRevised, directory, onHomepage, published, description, path,
+          title, content, fileRevised, directory, on_homepage, published, description, path,
         } = data;
-        console.log('----- loaded title:', title);
+
+        s.do.setIsDuplicate(true);
 
         const name = path.split('/').pop().replace(/\.md$/i, '');
         let dirObj = directory;
@@ -138,7 +160,7 @@ export default function makeArticleStore(params, setValue) {
         s.do.setContent(content);
         s.do.setDirectory(dirObj);
         s.do.setDescription(description);
-        s.do.setOnHomepage(!!onHomepage);
+        s.do.setOn_homepage(!!on_homepage);
         s.do.setPublished(!!published);
         data.directory = dirObj;
         data.name = name;

@@ -40,6 +40,7 @@ const stream = new ValueStream('mainStore')
     }
     store.my.auth0.loginWithRedirect({
       redirect_uri: window.location.origin,
+
     });
   })
   .method('isAdmin', (s) => s.do.sub() === 'facebook|10156102864753942')
