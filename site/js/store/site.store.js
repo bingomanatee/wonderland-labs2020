@@ -15,12 +15,39 @@ const stream = new ValueStream('mainStore')
   .property('homepageArticles', [], 'array')
   .property('categories', [], 'array')
   .property('categoriesLoaded', false, 'boolean')
-  .method('loadCategories', (s) => axios.get(apiPath('categories'))
-    .then(({ data }) => {
-      console.log('categories', data);
-      s.do.setCategories(data);
-      s.do.setCategoriesLoaded(true);
-    }))
+  .method('loadCategories', (s) => {
+    const getCats = () => {
+      let timeOut = false;
+      let tid = setTimeout(() => {
+        timeOut = true;
+        getCats();
+      }, 3000);
+      axios.get(apiPath('categories'))
+        .then(({data}) => {
+          if (timeOut) {
+            return;
+          }
+          if (tid) {
+            clearTimeout(tid);
+            tid = null;
+          }
+
+          console.log('categories:', data);
+
+          if (data && Array.isArray(data) && data.length) {
+            s.do.setCategories(data);
+            s.do.setCategoriesLoaded(true);
+          } else {
+            getCats();
+          }
+        })
+        .catch (error => {
+          console.log('error getting categories:', error);
+          getCats();
+        })
+    };
+    getCats();
+  })
   .method('catForArticle', (s, a) => {
     if (!a) {
       return null;

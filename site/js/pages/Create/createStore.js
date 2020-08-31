@@ -185,6 +185,8 @@ export default function makeArticleStore(params, setValue) {
   if (path) {
     console.log('loading article', path);
     store.do.load(decodeURIComponent(path));
+  } else {
+    setValue({})
   }
 
   return store;
