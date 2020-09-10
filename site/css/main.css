@@ -1,5 +1,6 @@
 h1, h2, h3, h4, h5, h6 {
   font-family: "Walbaum18pt-Medium", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 120%;
   color: black;
 }
 
@@ -78,11 +79,10 @@ html {
 }
 
 .background-container {
-  background-image: url("/img/bunny-rabbit.jpg");
-  background-size: cover;
   height: 100%;
   width: 100%;
   overflow: hidden;
+  background-color: coral;
 }
 
 .elevated {

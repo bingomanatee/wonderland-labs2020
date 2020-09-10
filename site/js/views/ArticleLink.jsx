@@ -19,15 +19,10 @@ const Headline = styled.h2`
   font-size: ${({ size }) => forSize(size, '1rem', '1.33rem')};
   font-family: Franco, "Helvetica Neue", Helvetica, sans-serif;
   color: black;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem;
   line-height: 120%;
   font-weight: 800;
   margin: 0;
-   ${({ size }) => forSize(size, '', `text-shadow:
-   -1px -1px 1px ${textShadowColor(size)},
-    1px -1px 1px ${textShadowColor(size)},
-    -1px 1px 1px ${textShadowColor(size)},
-     1px 1px 1px ${textShadowColor(size)}`)};
 
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10+ and Edge */
@@ -56,8 +51,8 @@ const ArticleHead = ({ children }) => (
 
 const ArticleBack = styled.div`
   padding: 0.25rem;
-  border-radius:  ${({ size }) => forSize(size, 0, '2px', '0.5rem')}
-  background-color:  ${({ size }) => forSize(size, 'rgba(255,255,255,0.125)', 'rgba(255,255,255,0)')};
+  border-radius:  ${({ size }) => forSize(size, 0, '2px', '0.5rem')};
+  background-color:  ${({ size }) => forSize(size, 'rgba(255,255,255,0.125)', 'rgba(255,255,255,0.2)')};
   ${({ size }) => forSize(size, '', `-webkit-box-shadow: inset 0px 0px 20px -5px ${SHADOW_INSET_COLOR};
   -moz-box-shadow: inset 0px 0px 20px -5px ${SHADOW_INSET_COLOR};
   box-shadow: inset 0px 0px 20px -5px ${SHADOW_INSET_COLOR};`)}

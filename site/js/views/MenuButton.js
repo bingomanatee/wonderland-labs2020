@@ -56,7 +56,7 @@ function SvgMenubutton(props) {
         transform="translate(160, 23)"
         style={{
           fontSize: 18,
-          fontFamily: 'Franca-SemiBold, Franca',
+          fontFamily: '"Franca-Book", Franca',
           fontWeight: 600,
           textAnchor: 'end',
         }}

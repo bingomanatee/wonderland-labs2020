@@ -41,11 +41,12 @@ html {
 }
 
 .background-container {
-  background-image: url("/img/bunny-rabbit.jpg");
-  background-size: cover;
+  // background-image: url("/img/bunny-rabbit.jpg");
+ //  background-size: cover;
   height: 100%;
   width: 100%;
   overflow: hidden;
+  background-color: coral;
 }
 
 .elevated {
